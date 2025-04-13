@@ -1,0 +1,105 @@
+@model List<Project.Models.Admin.QuanLyNguoiDungViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    var tenQuanTriVien = User.Claims.FirstOrDefault(c => c.Type == "HoTen")?.Value;
+}
+
+<div class="container-fluid">
+    <!-- Thanh ngang trên cùng -->
+    <div class="row bg-primary text-white py-2">
+        <div class="col-md-10">
+            <h4 class="ms-3">Xin chào Quản trị viên @tenQuanTriVien</h4>
+        </div>
+        <div class="col-md-2 text-end">
+            <a href="/Home/DangXuat" class="btn btn-light btn-sm me-3">Đăng xuất</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Thanh chức năng bên trái -->
+        <div class="col-md-3 bg-light vh-100">
+            <h5 class="mt-3">Chức năng</h5>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="/Admin/Home" class="text-decoration-none">Home</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/Admin/QuanLyNguoiDung" class="text-decoration-none">Quản lý người dùng</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/Admin/QuanLyMayTinh" class="text-decoration-none">Quản lý máy tính</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#thongKeSubMenu" aria-expanded="false" aria-controls="thongKeSubMenu">
+                        Thống kê doanh thu
+                    </a>
+                    <ul class="collapse list-group ms-3" id="thongKeSubMenu">
+                        <li class="list-group-item">
+                            <a href="/Admin/ThongKeTheoThoiGian" class="text-decoration-none">Theo thời gian</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="/Admin/ThongKeTheoMay" class="text-decoration-none">Theo máy</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Nội dung chính -->
+        <div class="col-md-9">
+            <div class="container mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-primary">Quản lý người dùng</h2>
+                    <form method="get" action="/Admin/QuanLyNguoiDung" class="d-flex">
+                        <input type="text" name="search" class="form-control me-2" placeholder="Tìm kiếm người dùng..." value="@ViewData["Search"]" />
+                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    </form>
+                    <a href="/Admin/ThemNguoiDung" class="btn btn-success">+ Thêm tài khoản</a>
+                </div>
+
+                <table class="table table-bordered table-hover text-center">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>STT</th>
+                            <th>ID</th>
+                            <th>Tên đăng nhập</th>
+                            <th>Họ tên</th>
+                            <th>Số điện thoại</th>
+                            <th>Vai trò</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            int stt = 1; // Biến đếm STT
+                            foreach (var user in Model)
+                            {
+                                <tr>
+                                    <td>@stt</td>
+                                    <td>@user.MaNguoiDung</td>
+                                    <td>@user.TenDangNhap</td>
+                                    <td>@user.HoTen</td>
+                                    <td>@user.SoDienThoai</td>
+                                    <td>@user.Role</td>
+                                    <td>
+                                        <a href="/Admin/ChinhSuaNguoiDung/@user.MaNguoiDung" class="btn btn-warning btn-sm">Chỉnh sửa</a>
+                                        <a href="/Admin/XoaNguoiDung/@user.MaNguoiDung" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">Xóa</a>
+                                    </td>
+                                </tr>
+                                stt++; // Tăng STT
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center">Không có người dùng nào.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

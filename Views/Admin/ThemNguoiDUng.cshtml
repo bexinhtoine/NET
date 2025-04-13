@@ -1,0 +1,53 @@
+@model Project.Models.Admin.ChinhSuaNguoiDungViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa người dùng";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="width: 500px;">
+        <h2 class="text-primary mb-4 text-center">Chỉnh sửa người dùng</h2>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form method="post" action="/Admin/ChinhSuaNguoiDung">
+            <input type="hidden" name="MaNguoiDung" value="@Model.MaNguoiDung" />
+
+            <div class="mb-3">
+                <label for="TenDangNhap" class="form-label">Tên đăng nhập</label>
+                <input type="text" class="form-control" id="TenDangNhap" name="TenDangNhap" value="@Model.TenDangNhap" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="HoTen" class="form-label">Họ tên</label>
+                <input type="text" class="form-control" id="HoTen" name="HoTen" value="@Model.HoTen" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="SoDienThoai" class="form-label">Số điện thoại</label>
+                <input type="text" class="form-control" id="SoDienThoai" name="SoDienThoai" value="@Model.SoDienThoai" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="Role" class="form-label">Vai trò</label>
+                <select class="form-select" id="Role" name="Role" required>
+                    <option value="Admin" selected="@(Model.Role == "Admin")">Admin</option>
+                    <option value="Khách" selected="@(Model.Role == "Khách")">Khách</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Lưu thay đổi</button>
+            <a href="/Admin/QuanLyNguoiDung" class="btn btn-secondary w-100 mt-2">Hủy</a>
+        </form>
+    </div>
+</div>

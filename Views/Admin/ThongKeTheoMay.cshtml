@@ -1,0 +1,127 @@
+@model List<Project.Models.Admin.ThongKeViewModel>
+
+@{
+    ViewData["Title"] = "Thống kê theo máy";
+    var tenQuanTriVien = User.Claims.FirstOrDefault(c => c.Type == "HoTen")?.Value;
+}
+
+<div class="container-fluid">
+    <!-- Thanh ngang trên cùng -->
+    <div class="row bg-primary text-white py-2">
+        <div class="col-md-10">
+            <h4 class="ms-3">Xin chào Quản trị viên @tenQuanTriVien</h4>
+        </div>
+        <div class="col-md-2 text-end">
+            <a href="/Home/DangXuat" class="btn btn-light btn-sm me-3">Đăng xuất</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Thanh chức năng bên trái -->
+        <div class="col-md-3 bg-light vh-100">
+            <h5 class="mt-3">Chức năng</h5>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="/Admin/Home" class="text-decoration-none">Home</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/Admin/QuanLyNguoiDung" class="text-decoration-none">Quản lý người dùng</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/Admin/QuanLyMayTinh" class="text-decoration-none">Quản lý máy tính</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#thongKeSubMenu" aria-expanded="false" aria-controls="thongKeSubMenu">
+                        Thống kê doanh thu
+                    </a>
+                    <ul class="collapse list-group ms-3" id="thongKeSubMenu">
+                        <li class="list-group-item">
+                            <a href="/Admin/ThongKeTheoThoiGian" class="text-decoration-none">Theo thời gian</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="/Admin/ThongKeTheoMay" class="text-decoration-none">Theo máy</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Nội dung chính -->
+        <div class="col-md-9">
+            <div class="container mt-5">
+                <h2 class="text-center text-primary mb-4">Thống kê theo máy</h2>
+            
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <a href="/Admin/Home" class="btn btn-secondary">Quay lại</a>
+                    <button class="btn btn-success" onclick="window.print()">In báo cáo</button>
+                </div>
+            
+                <table class="table table-bordered table-hover text-center">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã máy</th>
+                            <th>Tên máy</th>
+                            <th>Trạng thái</th>
+                            <th>Số lần sử dụng</th>
+                            <th>Tổng giờ sử dụng</th>
+                            <th>Tổng doanh thu</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            int stt = 1;
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@stt</td>
+                                    <td>@item.MaMay</td>
+                                    <td>@item.TenMay</td>
+                                    <td>@item.TrangThai</td>
+                                    <td>@item.SoLanSuDung</td>
+                                    <td>@item.TongGioSuDung.ToString("0.00") giờ</td>
+                                    <td>@item.TongDoanhThu.ToString("C")</td>
+                                    <td>
+                                        <a href="/Admin/ThongKeChiTietMay?maMay=@item.MaMay" class="btn btn-info btn-sm">Xem chi tiết</a>
+                                    </td>
+                                </tr>
+                                stt++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center">Không có dữ liệu thống kê.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    h2 {
+        font-weight: bold;
+    }
+
+    .table {
+        font-size: 16px;
+    }
+
+    .table th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn {
+        font-size: 14px;
+    }
+
+    .vh-100 {
+        height: 100vh;
+    }
+</style>

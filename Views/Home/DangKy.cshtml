@@ -1,0 +1,102 @@
+@model Project.Models.Home.DangKyViewModel
+
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<div class="register-container">
+    <h1 class="text-primary" style="text-align: center;">Đăng ký</h1>
+
+    <div class="validation-summary">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </div>
+
+    <form asp-action="DangKy" method="post">
+        <div class="form-group">
+            <label asp-for="FullName" class="form-label">Họ và tên</label>
+            <input asp-for="FullName" class="form-control" placeholder="Nhập họ và tên" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Username" class="form-label">Tên đăng nhập</label>
+            <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PhoneNumber" class="form-label">Số điện thoại</label>
+            <input asp-for="PhoneNumber" class="form-control" placeholder="Nhập số điện thoại" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password" class="form-label">Mật khẩu</label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ConfirmPassword" class="form-label">Xác nhận mật khẩu</label>
+            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Nhập lại mật khẩu" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+        </div>
+        <div class="form-group">
+            <a href="javascript:history.back()" class="btn btn-secondary w-100">Quay lại</a>
+        </div>
+
+        <div class="text-center mt-2">
+            <p>Đã có tài khoản? <a href="/Home/DangNhap" class="text-primary">Đăng nhập ngay</a></p>
+        </div>
+    </form>
+</div>
+
+<style>
+    .register-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: 'Arial', sans-serif;
+    }
+
+    .register-container h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .register-container p {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-control {
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+    }
+
+    .validation-summary {
+        margin-bottom: 1rem;
+    }
+
+    .validation-summary ul {
+        list-style: none;
+        padding: 0;
+    }
+</style>

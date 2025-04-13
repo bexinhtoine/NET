@@ -1,0 +1,43 @@
+@model Project.Models.Admin.ThemMayTinhViewModel
+
+@{
+    ViewData["Title"] = "Thêm máy tính";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="width: 500px;">
+        <h2 class="text-primary mb-4 text-center">Thêm máy tính</h2>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form method="post" action="/Admin/ThemMayTinh">
+            <div class="mb-3">
+                <label for="TenMay" class="form-label">Tên máy</label>
+                <input type="text" class="form-control" id="TenMay" name="TenMay" value="@Model.TenMay" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="DonGia" class="form-label">Đơn giá</label>
+                <input type="number" class="form-control" id="DonGia" name="DonGia" value="@Model.DonGia" step="0.01" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="MoTa" class="form-label">Mô tả</label>
+                <textarea class="form-control" id="MoTa" name="MoTa" rows="3">@Model.MoTa</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Thêm máy tính</button>
+            <a href="/Admin/QuanLyMayTinh" class="btn btn-secondary w-100 mt-2">Hủy</a>
+        </form>
+    </div>
+</div>
