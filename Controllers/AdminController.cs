@@ -515,10 +515,143 @@ namespace Project.Controllers
                         .Sum(sdm => (sdm.ThoiGianKetThuc.Value - sdm.ThoiGianBatDau).TotalHours),
                     TongDoanhThu = item.SuDungMays.Sum(sdm => sdm.TongTien ?? 0)
                 })
+                .OrderByDescending(item => item.TongDoanhThu) // Sắp xếp theo doanh thu giảm dần
                 .ToList();
 
             ViewData["Search"] = search;
             return View(mayTinhList);
+        }
+    
+        [HttpGet]
+        public IActionResult ThongKeChiTietMay(string maMay)
+        {
+            if (string.IsNullOrEmpty(maMay))
+            {
+                TempData["Error"] = "Mã máy không hợp lệ.";
+                return RedirectToAction("ThongKeTheoMay");
+            }
+        
+            var mayTinh = _context.MayTinhs.FirstOrDefault(mt => mt.MaMay == maMay);
+            if (mayTinh == null)
+            {
+                TempData["Error"] = "Không tìm thấy máy tính.";
+                return RedirectToAction("ThongKeTheoMay");
+            }
+            
+            var chiTiet = _context.SuDungMays
+            .Where(sdm => sdm.MaMay == maMay)
+            .Select(sdm => new ThongKeViewModel
+            {
+                MaMay = maMay,
+                TenMay = mayTinh.TenMay,
+                ThoiGianBatDau = sdm.ThoiGianBatDau,
+                ThoiGianKetThuc = sdm.ThoiGianKetThuc,
+                TongDoanhThu = sdm.TongTien ?? 0,
+                TenNguoiDung = _context.NguoiDungs
+                    .Where(nd => nd.MaNguoiDung == sdm.MaNguoiDung)
+                    .Select(nd => nd.HoTen)
+                    .FirstOrDefault(),
+                SoDienThoai = _context.NguoiDungs
+                    .Where(nd => nd.MaNguoiDung == sdm.MaNguoiDung)
+                    .Select(nd => nd.SoDienThoai)
+                    .FirstOrDefault()
+            })
+            .ToList();
+        
+            ViewData["TenMay"] = mayTinh.TenMay;
+            ViewData["MaMay"] = maMay;
+        
+            return View(chiTiet);
+        }
+         
+        [HttpGet]
+        public IActionResult ThongKeTheoThoiGian(DateTime? startDate, DateTime? endDate)
+        {
+            // Nếu không chọn ngày, mặc định lấy toàn bộ dữ liệu
+            if (!startDate.HasValue || !endDate.HasValue)
+            {
+                startDate = new DateTime(2025, 1, 1); // Giá trị nhỏ nhất hợp lệ cho SQL Server
+                endDate = DateTime.Now; // Mặc định là ngày hiện tại
+            }
+        
+            // Lấy danh sách thống kê theo khoảng thời gian
+            var thongKeList = _context.SuDungMays
+                .Where(sdm => sdm.ThoiGianBatDau >= startDate && sdm.ThoiGianKetThuc <= endDate)
+                .GroupBy(sdm => sdm.MaMay) // Nhóm theo mã máy
+                .Select(group => new ThongKeViewModel
+                {
+                    MaMay = group.Key,
+                    TenMay = _context.MayTinhs
+                        .Where(mt => mt.MaMay == group.Key)
+                        .Select(mt => mt.TenMay)
+                        .FirstOrDefault(),
+                    TongDoanhThu = group.Sum(sdm => sdm.TongTien ?? 0) // Tính tổng doanh thu trong khoảng thời gian
+                })
+                .OrderByDescending(sdm => sdm.TongDoanhThu) // Sắp xếp theo doanh thu giảm dần
+                .ToList();
+        
+            // Truyền dữ liệu ngày bắt đầu và kết thúc để hiển thị lại trên giao diện
+            ViewData["StartDate"] = startDate.Value.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = endDate.Value.ToString("yyyy-MM-dd");
+        
+            return View(thongKeList);
+        }
+
+        [HttpGet]
+        public IActionResult ThongKeChiTietThoiGian(string maMay, DateTime? startDate, DateTime? endDate)
+        {
+            if (string.IsNullOrEmpty(maMay))
+            {
+                TempData["Error"] = "Mã máy không hợp lệ.";
+                return RedirectToAction("ThongKeTheoMay");
+            }
+        
+            var mayTinh = _context.MayTinhs.FirstOrDefault(mt => mt.MaMay == maMay);
+            if (mayTinh == null)
+            {
+                TempData["Error"] = "Không tìm thấy máy tính.";
+                return RedirectToAction("ThongKeTheoMay");
+            }
+        
+            // Nếu không chọn ngày, đặt giá trị mặc định
+            if (!startDate.HasValue)
+            {
+                startDate = new DateTime(1753, 1, 1); // Giá trị nhỏ nhất hợp lệ cho SQL Server
+            }
+            if (!endDate.HasValue)
+            {
+                endDate = DateTime.Now; // Mặc định là ngày hiện tại
+            }
+        
+            // Lấy danh sách chi tiết sử dụng máy theo khoảng thời gian
+            var chiTiet = _context.SuDungMays
+                .Where(sdm => sdm.MaMay == maMay && sdm.ThoiGianBatDau >= startDate && sdm.ThoiGianKetThuc <= endDate)
+                .Select(sdm => new ThongKeViewModel
+                {
+                    MaMay = maMay,
+                    TenMay = mayTinh.TenMay,
+                    ThoiGianBatDau = sdm.ThoiGianBatDau,
+                    ThoiGianKetThuc = sdm.ThoiGianKetThuc,
+                    TongDoanhThu = sdm.TongTien ?? 0,
+                    TenNguoiDung = _context.NguoiDungs
+                        .Where(nd => nd.MaNguoiDung == sdm.MaNguoiDung)
+                        .Select(nd => nd.HoTen)
+                        .FirstOrDefault(),
+                    SoDienThoai = _context.NguoiDungs
+                        .Where(nd => nd.MaNguoiDung == sdm.MaNguoiDung)
+                        .Select(nd => nd.SoDienThoai)
+                        .FirstOrDefault()
+                })
+                .OrderByDescending(sdm => sdm.ThoiGianBatDau) // Sắp xếp theo thời gian bắt đầu giảm dần
+                .ToList();
+        
+            // Truyền dữ liệu ngày bắt đầu và kết thúc để hiển thị lại trên giao diện
+            ViewData["StartDate"] = startDate.Value.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = endDate.Value.ToString("yyyy-MM-dd");
+            ViewData["TenMay"] = mayTinh.TenMay;
+            ViewData["MaMay"] = maMay;
+        
+            return View(chiTiet);
         }
     }
 }

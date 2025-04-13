@@ -9,6 +9,7 @@ namespace Project.Models.Admin
         public string? TenMay { get; set; } // Tên máy
         public string? MaNguoiDung { get; set; } // Mã người dùng (nếu cần)
         public string? TenNguoiDung { get; set; } // Tên người dùng (nếu cần)
+        public string? SoDienThoai { get; set; } // Số điện thoại người dùng (nếu cần)
 
         // Thống kê sử dụng
         public int SoLanSuDung { get; set; } // Số lần sử dụng

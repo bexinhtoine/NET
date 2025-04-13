@@ -1,7 +1,7 @@
 @model List<Project.Models.Admin.ThongKeViewModel>
 
 @{
-    ViewData["Title"] = "Thống kê theo thời gian";
+    ViewData["Title"] = "Thống kê theo máy";
     var tenQuanTriVien = User.Claims.FirstOrDefault(c => c.Type == "HoTen")?.Value;
 }
 
@@ -49,34 +49,19 @@
         <!-- Nội dung chính -->
         <div class="col-md-9">
             <div class="container mt-5">
-                <h2 class="text-center text-primary mb-4">Thống kê theo thời gian</h2>
-
-                <!-- Form chọn khoảng thời gian -->
-                <form method="get" action="/Admin/ThongKeTheoThoiGian" class="mb-4">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <label for="startDate" class="form-label">Ngày bắt đầu</label>
-                            <input type="date" id="startDate" name="startDate" class="form-control" value="@ViewData["StartDate"]" />
-                        </div>
-                        <div class="col-md-5">
-                            <label for="endDate" class="form-label">Ngày kết thúc</label>
-                            <input type="date" id="endDate" name="endDate" class="form-control" value="@ViewData["EndDate"]" />
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">Lọc</button>
-                        </div>
-                    </div>
-                </form>
-
-                <!-- Bảng thống kê -->
+                <h2 class="text-center text-primary mb-4">Chi tiết thống kê của máy @ViewData["TenMay"] (@ViewData["MaMay"])</h2>
+            
+                <a href="/Admin/ThongKeTheoMay" class="btn btn-secondary mb-4">Quay lại</a>
+            
                 <table class="table table-bordered table-hover text-center">
                     <thead class="table-primary">
                         <tr>
                             <th>STT</th>
-                            <th>Mã máy</th>
-                            <th>Tên máy</th>
+                            <th>Thời gian bắt đầu</th>
+                            <th>Thời gian kết thúc</th>
                             <th>Doanh thu</th>
-                            <th>Thao tác</th>
+                            <th>Tên người dùng</th>
+                            <th>Số điện thoại</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -87,12 +72,11 @@
                             {
                                 <tr>
                                     <td>@stt</td>
-                                    <td>@item.MaMay</td>
-                                    <td>@item.TenMay</td>
+                                    <td>@item.ThoiGianBatDau?.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@item.ThoiGianKetThuc?.ToString("dd/MM/yyyy HH:mm")</td>
                                     <td>@item.TongDoanhThu.ToString("C")</td>
-                                    <td>
-                                        <a href="/Admin/ThongKeChiTietThoiGian?maMay=@item.MaMay" class="btn btn-info btn-sm">Xem chi tiết</a>
-                                    </td>
+                                    <td>@item.TenNguoiDung</td>
+                                    <td>@item.SoDienThoai</td>
                                 </tr>
                                 stt++;
                             }
@@ -100,7 +84,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="7" class="text-center">Không có dữ liệu thống kê.</td>
+                                <td colspan="6" class="text-center">Không có dữ liệu chi tiết.</td>
                             </tr>
                         }
                     </tbody>
