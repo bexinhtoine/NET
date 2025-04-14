@@ -36,6 +36,18 @@
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-HQhef7SY5dZZwMW1Bm/lTusOcr3Z3tucsm2HYFwSUdo="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"56152"},{"Name":"Content-Type","Value":"image/jpeg"},{"Name":"ETag","Value":"\u0022HQhef7SY5dZZwMW1Bm/lTusOcr3Z3tucsm2HYFwSUdo=\u0022"},{"Name":"Last-Modified","Value":"Sat, 12 Apr 2025 17:26:34 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Project/images/maqr.p1xx3uvmz4.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\maqr.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"p1xx3uvmz4"},{"Name":"integrity","Value":"sha256-jbBjeKSeBf5UWbuFiq1Is\u002BdD3Ks/1BPz9PtySgIq5eo="},{"Name":"label","Value":"_content/Project/images/maqr.png"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"3379828"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022jbBjeKSeBf5UWbuFiq1Is\u002BdD3Ks/1BPz9PtySgIq5eo=\u0022"},{"Name":"Last-Modified","Value":"Mon, 14 Apr 2025 19:31:44 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Project/images/maqr.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\maqr.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-jbBjeKSeBf5UWbuFiq1Is\u002BdD3Ks/1BPz9PtySgIq5eo="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"3379828"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022jbBjeKSeBf5UWbuFiq1Is\u002BdD3Ks/1BPz9PtySgIq5eo=\u0022"},{"Name":"Last-Modified","Value":"Mon, 14 Apr 2025 19:31:44 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/Project/js/site.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\site.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

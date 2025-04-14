@@ -1,0 +1,101 @@
+@model IEnumerable<Project.Models.KhachHang.LichSuViewModel>
+
+@{
+    ViewData["Title"] = "Lịch sử sử dụng";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Thanh ngang trên cùng -->
+    <div class="row bg-primary text-white py-2">
+        <div class="col-md-10">
+            <h4 class="ms-3">Chào mừng quý khách đến với quán NET "Thiên Đường"</h4>
+        </div>
+        <div class="col-md-2 text-end">
+            <a href="/Home/DangXuat" class="btn btn-light btn-sm me-3">Đăng xuất</a>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <!-- Thanh chức năng bên trái -->
+        <div class="col-md-3 bg-light vh-100">
+            <h5 class="mt-3">Chức năng</h5>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="/KhachHang/Home" class="text-decoration-none">Home</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/KhachHang/LichSu" class="text-decoration-none">Xem lịch sử sử dụng</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/KhachHang/SoDu" class="text-decoration-none">Số dư</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/KhachHang/ThayDoiThongTinCaNhan" class="text-decoration-none">Thay đổi thông tin cá nhân</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/KhachHang/HoTro" class="text-decoration-none">Liên hệ hỗ trợ</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Nội dung chính -->
+        <div class="col-md-9">
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">Lịch sử sử dụng</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã máy</th>
+                                    <th>Tên máy</th>
+                                    <th>Thời gian bắt đầu</th>
+                                    <th>Thời gian kết thúc</th>
+                                    <th>Tổng thời gian</th>
+                                    <th>Chi phí sử dụng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Any())
+                                {
+                                    int index = 1;
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@index</td>
+                                            <td>@item.MaMay</td>
+                                            <td>@item.TenMay</td>
+                                            <td>@item.ThoiGianBatDau?.ToString("HH:mm:ss dd/MM/yyyy")</td>
+                                            <td>@(item.ThoiGianKetThuc.HasValue ? item.ThoiGianKetThuc.Value.ToString("HH:mm:ss dd/MM/yyyy") : "Đang sử dụng")</td>
+                                            <td>@(item.TongThoiGian.HasValue ? $"{item.TongThoiGian.Value:F2} giờ" : "N/A")</td>
+                                            <td>@(item.TongTien.HasValue ? $"{item.TongTien.Value:N0} VNĐ" : "0 VNĐ")</td>
+                                        </tr>
+                                        index++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center">Không có lịch sử sử dụng.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="alert alert-info text-center" role="alert">
+                        <h5>Số dư hiện tại của bạn là:</h5>
+                        <h3 class="text-primary"><strong>@ViewData["SoDu"] VNĐ</strong></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

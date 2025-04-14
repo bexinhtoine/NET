@@ -17,6 +17,10 @@
       "PackagePath": "staticwebassets\\images\\home_index.jpg"
     },
     {
+      "Id": "D:\\University\\Lap_trinh_NET\\Project\\Project\\wwwroot\\images\\maqr.png",
+      "PackagePath": "staticwebassets\\images\\maqr.png"
+    },
+    {
       "Id": "D:\\University\\Lap_trinh_NET\\Project\\Project\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

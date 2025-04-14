@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "m98vkpCUVlupP6PapVFLxWiH8pRI+yyIKYlVLJB11HM=",
+  "Hash": "Qp5nPunXLUoGtYMVh2acTiqHs1O1e78BMS+1GcaDelI=",
   "Source": "Project",
   "BasePath": "_content/Project",
   "Mode": "Default",
@@ -120,6 +120,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\home_index.jpg"
+    },
+    {
+      "Identity": "D:\\University\\Lap_trinh_NET\\Project\\Project\\wwwroot\\images\\maqr.png",
+      "SourceId": "Project",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\University\\Lap_trinh_NET\\Project\\Project\\wwwroot\\",
+      "BasePath": "_content/Project",
+      "RelativePath": "images/maqr#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "p1xx3uvmz4",
+      "Integrity": "jbBjeKSeBf5UWbuFiq1Is+dD3Ks/1BPz9PtySgIq5eo=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\maqr.png"
     },
     {
       "Identity": "D:\\University\\Lap_trinh_NET\\Project\\Project\\wwwroot\\js\\site.js",
@@ -1584,6 +1605,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-HQhef7SY5dZZwMW1Bm/lTusOcr3Z3tucsm2HYFwSUdo="
+        }
+      ]
+    },
+    {
+      "Route": "images/maqr.p1xx3uvmz4.png",
+      "AssetFile": "D:\\University\\Lap_trinh_NET\\Project\\Project\\wwwroot\\images\\maqr.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3379828"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"jbBjeKSeBf5UWbuFiq1Is+dD3Ks/1BPz9PtySgIq5eo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Apr 2025 19:31:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "p1xx3uvmz4"
+        },
+        {
+          "Name": "label",
+          "Value": "images/maqr.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-jbBjeKSeBf5UWbuFiq1Is+dD3Ks/1BPz9PtySgIq5eo="
+        }
+      ]
+    },
+    {
+      "Route": "images/maqr.png",
+      "AssetFile": "D:\\University\\Lap_trinh_NET\\Project\\Project\\wwwroot\\images\\maqr.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3379828"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"jbBjeKSeBf5UWbuFiq1Is+dD3Ks/1BPz9PtySgIq5eo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Apr 2025 19:31:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-jbBjeKSeBf5UWbuFiq1Is+dD3Ks/1BPz9PtySgIq5eo="
         }
       ]
     },

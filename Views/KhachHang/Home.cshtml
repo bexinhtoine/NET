@@ -2,14 +2,13 @@
 
 @{
     ViewData["Title"] = "Trang chủ Khách hàng";
-
 }
 
 <div class="container-fluid">
     <!-- Thanh ngang trên cùng -->
     <div class="row bg-primary text-white py-2">
         <div class="col-md-10">
-            <h4 class="ms-3">Chào mừng quý khách @Model.HoTen </h4>
+            <h4 class="ms-3">Chào mừng quý khách <strong></strong>@Model.HoTen</strong> đến với quán NET "Thiên Đường"</h4>
         </div>
         <div class="col-md-2 text-end">
             <a href="/Home/DangXuat" class="btn btn-light btn-sm me-3">Đăng xuất</a>
@@ -22,13 +21,16 @@
             <h5 class="mt-3">Chức năng</h5>
             <ul class="list-group">
                 <li class="list-group-item">
-                    <a href="/KhachHang/DatLich" class="text-decoration-none">Đặt lịch sử dụng dịch vụ</a>
+                    <a href="/KhachHang/Home" class="text-decoration-none">Home</a>
                 </li>
                 <li class="list-group-item">
                     <a href="/KhachHang/LichSu" class="text-decoration-none">Xem lịch sử sử dụng</a>
                 </li>
                 <li class="list-group-item">
-                    <a href="/KhachHang/SoDu" class="text-decoration-none">Xem số dư</a>
+                    <a href="/KhachHang/SoDu" class="text-decoration-none">Số dư</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/KhachHang/ThayDoiThongTinCaNhan" class="text-decoration-none">Thay đổi thông tin cá nhân</a>
                 </li>
                 <li class="list-group-item">
                     <a href="/KhachHang/HoTro" class="text-decoration-none">Liên hệ hỗ trợ</a>
@@ -38,19 +40,175 @@
 
         <!-- Nội dung chính -->
         <div class="col-md-9">
-            <div class="container mt-4">
-                <h3>Thông tin tài khoản</h3>
-                <div class="card mt-3">
-                    <div class="card-header bg-primary text-white">
-                        Thông tin cá nhân
+            <!-- Thông báo trạng thái sử dụng máy -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    @if (Model.TrangThaiSuDung == "Đang sử dụng")
+                    {
+                        <div class="card-header bg-warning text-dark text-center">
+                            <h4 class="mb-0" style="font-size: 1.5rem; font-weight: bold;">Trạng thái sử dụng máy</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-light text-center" style="font-size: 1.5rem; font-weight: bold; color: #6c757d; border: 1px solid #ffc107; border-radius: 10px;">
+                                <i class="bi bi-exclamation-circle-fill"></i> Bạn đang dùng máy <strong style="color: #ff5722;">@Model.TenMayDangSuDung</strong>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-md-6 mb-4">
+                                    <div class="p-4 border rounded bg-info text-white shadow-sm">
+                                        <p class="mb-2" style="font-size: 1.2rem; font-weight: bold;">Thời gian bắt đầu</p>
+                                        <span id="thoiGianBatDau" style="font-size: 1.5rem;">@Model.ThoiGianBatDau?.ToString("HH:mm:ss dd/MM/yyyy")</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="p-4 border rounded bg-success text-white shadow-sm">
+                                        <p class="mb-2" style="font-size: 1.2rem; font-weight: bold;">Thời gian sử dụng</p>
+                                        <span id="thoiGianSuDung" style="font-size: 1.5rem;">@Model.ThoiGianDangSuDung?.ToString(@"hh\:mm\:ss") ?? "00:00:00"</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="p-4 border rounded bg-secondary text-white shadow-sm">
+                                        <p class="mb-2" style="font-size: 1.2rem; font-weight: bold;">Chi phí sử dụng</p>
+                                        <span id="chiPhi" style="font-size: 1.5rem;">@Model.TongTienCanThanhToan.ToString("N0") VNĐ</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="p-4 border rounded bg-primary text-white shadow-sm">
+                                        <p class="mb-2" style="font-size: 1.2rem; font-weight: bold;">Số dư sau khi trừ đi chi phí</p>
+                                        <span id="soDuHienTai" style="font-size: 1.5rem;">@Model.SoDu.ToString("N0") VNĐ</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <form asp-action="KetThucSuDung" method="post" class="text-center">
+                                <input type="hidden" name="maMay" value="@Model.MaMay" />
+                                <button type="submit" class="btn btn-danger px-5 py-3" style="font-size: 1.2rem; font-weight: bold;">
+                                    <i class="bi bi-stop-circle"></i> Kết thúc sử dụng
+                                </button>
+                            </form>
+                        </div>
+
+                    }
+                    else if (Model.SoDu <= 0)
+                    {
+                        <div class="card-header bg-warning text-dark text-center">
+                            <h4 class="mb-0" style="font-size: 1.5rem; font-weight: bold;">Trạng thái sử dụng máy</h4>
+                        </div>
+                        <div class="alert alert-danger text-center">
+                            <h5><i class="bi bi-exclamation-triangle-fill"></i> Số dư của bạn đã hết. Vui lòng nạp thêm tiền để sử dụng máy.</h5>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning text-center">
+                            <h5><i class="bi bi-exclamation-circle-fill"></i> Bạn hiện không sử dụng máy nào. Hãy chọn máy để sử dụng!</h5>
+                        </div>
+                        <div class="card mt-3">
+                        <div class="card-header bg-primary text-white">
+                            <h5 style="font-weight: bold;">Danh sách máy</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Phần tìm kiếm -->
+                            <div class="mb-3">
+                                <form method="get" action="/KhachHang/Home">
+                                    <div class="input-group">
+                                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm máy theo tên hoặc mã..." value="@Context.Request.Query["search"]" />
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-search"></i> Tìm kiếm
+                                        </button>
+                                    </div>
+                                </form>
+                            <div class="alert alert-info"></div>
+                                <h5><i class="bi bi-info-circle-fill"></i> Số dư hiện tại của bạn là: <strong>@Model.SoDu.ToString("C")</strong> </h5>
+                            </div>
+                            <!-- Bảng danh sách máy -->
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="machineTable" style="background-color: #f0f8ff;"> <!-- Màu xanh nhạt -->
+                                    <thead class="table-primary"> 
+                                        <tr>
+                                            <th>Mã máy</th>
+                                            <th>Tên máy</th>
+                                            <th>Đơn giá</th>
+                                            <th>Số giờ dùng tối đa</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var may in Model.DanhSachMay)
+                                        {
+                                            <tr>
+                                                <td>@may.MaMay</td>
+                                                <td>@may.TenMay</td>
+                                                <td>@(may.DonGia?.ToString("C") ?? "0 VND")</td>
+                                                <td>
+                                                    @(may.ThoiGianSuDungToiDa.HasValue 
+                                                        ? $"{may.ThoiGianSuDungToiDa.Value.Hours} giờ {may.ThoiGianSuDungToiDa.Value.Minutes} phút" 
+                                                        : "Không xác định")
+                                                </td>
+                                                <td>
+                                                    <form method="post" action="/KhachHang/ChonMayDung">
+                                                        <input type="hidden" name="maMay" value="@may.MaMay" />
+                                                        <button type="submit" class="btn btn-success btn-sm rounded-pill px-4 py-2" style="font-weight: bold;">
+                                                            <i class="bi bi-plus-circle"></i> Chọn
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p><strong>Họ và tên:</strong> @Model.HoTen</p>
-                        <p><strong>Số điện thoại:</strong> @Model.SoDienThoai</p>
-                        <p><strong>Số dư:</strong> @Model.SoDu VNĐ</p>
-                    </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function updateThongTinSuDung() {
+        fetch('/KhachHang/GetThongTinSuDung') // API để lấy thông tin sử dụng máy
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Cập nhật thông tin trên giao diện
+                    document.getElementById('thoiGianBatDau').innerText = data.thoiGianBatDau; // Thời gian bắt đầu
+                    document.getElementById('thoiGianSuDung').innerText = data.thoiGianSuDung; // Thời gian sử dụng
+                    document.getElementById('chiPhi').innerText = data.chiPhi.toLocaleString('vi-VN') + " VNĐ"; // Chi phí sử dụng
+                    document.getElementById('soDuHienTai').innerText = data.soDuHienTai.toLocaleString('vi-VN') + " VNĐ"; // Số dư hiện tại
+
+                    // Kiểm tra nếu số dư bằng 0
+                    if (data.soDuHienTai <= 0) {
+                        console.warn("Số dư đã hết, tự động kết thúc sử dụng máy.");
+                        ketThucSuDung(data.maMay); // Gọi hàm kết thúc sử dụng máy
+                    }
+                } else {
+                    console.error(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function ketThucSuDung(maMay) {
+        fetch('/KhachHang/KetThucSuDung', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ maMay: maMay }) // Gửi mã máy để kết thúc sử dụng
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Thuê máy đã kết thúc do số dư không đủ.");
+                    location.reload(); // Tải lại trang để cập nhật trạng thái
+                } else {
+                    console.error(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Gọi hàm cập nhật mỗi giây
+    setInterval(updateThongTinSuDung, 1000);
+</script>
