@@ -65,6 +65,8 @@ namespace Project.Controllers
                     SoDienThoai = nd.SoDienThoai,
                     Role = nd.Role
                 })
+                .OrderBy(nd => nd.Role == "Khách") // Sắp xếp Admin trước Khách
+                .ThenBy(nd => nd.HoTen) 
                 .ToList();
         
             // Lưu từ khóa tìm kiếm vào ViewData để hiển thị lại trên giao diện
@@ -451,40 +453,62 @@ namespace Project.Controllers
         }
 
         [HttpGet]
-        public IActionResult XoaMayTinh(string id)
+        public IActionResult XoaNguoiDung(string userId)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(userId))
             {
-                TempData["Error"] = "ID máy tính không hợp lệ.";
-                return RedirectToAction("QuanLyMayTinh");
+                TempData["Error"] = "ID người dùng không hợp lệ.";
+                return RedirectToAction("QuanLyNguoiDung");
             }
         
-            var mayTinh = _context.MayTinhs.FirstOrDefault(mt => mt.MaMay == id);
-            if (mayTinh == null)
+            var user = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == userId);
+            if (user == null)
             {
-                TempData["Error"] = "Không tìm thấy máy tính.";
-                return RedirectToAction("QuanLyMayTinh");
+                TempData["Error"] = "Không tìm thấy người dùng.";
+                return RedirectToAction("QuanLyNguoiDung");
+            }
+            // Kiểm tra nếu người dùng có dữ liệu liên quan
+            var hasRelatedData = _context.SuDungMays.Any(sdm => sdm.MaNguoiDung == userId);
+
+            // Tạo ViewModel để truyền dữ liệu sang View
+            var viewModel = new XoaNguoiDungViewModel
+            {
+                MaNguoiDung = user.MaNguoiDung,
+                HoTen = user.HoTen,
+                SoDienThoai = user.SoDienThoai,
+                CoDuLieuLienQuan = hasRelatedData,
+                SoDu = user.SoDu ?? 0
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult XoaNguoiDung(XoaNguoiDungViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Tìm người dùng theo ID
+                var user = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == model.MaNguoiDung);
+        
+                if (user == null)
+                {
+                    TempData["Error"] = "Không tìm thấy người dùng.";
+                    return RedirectToAction("QuanLyNguoiDung");
+                }
+        
+                // Đánh dấu người dùng là đã xóa
+                user.TrangThai = "Đã xóa";
+                user.NgayXoaTaiKhoan = DateTime.Now; // Ghi lại thời gian xóa tài khoản
+        
+                // Lưu thay đổi vào cơ sở dữ liệu
+                _context.SaveChanges();
+        
+                TempData["Message"] = "Xóa người dùng thành công.";
+                return RedirectToAction("QuanLyNguoiDung");
             }
         
-            if (mayTinh.TrangThai == "Hoạt động")
-            {
-                TempData["Error"] = "Máy tính đang được sử dụng. Không thể xóa.";
-                return RedirectToAction("QuanLyMayTinh");
-            }
-        
-            var hasHistory = _context.SuDungMays.Any(sdm => sdm.MaMay == id);
-            if (hasHistory)
-            {
-                TempData["Warning"] = "Máy tính này có lịch sử sử dụng. Nên đặt trạng thái máy về 'Bảo trì' thay vì xóa.";
-            }
-        
-            mayTinh.TrangThai = "Đã xóa";
-            mayTinh.ThoiGianXoa = DateTime.Now;
-        
-            _context.SaveChanges();
-        
-            TempData["Message"] = "Máy tính đã được chuyển sang trạng thái 'Đã xóa'.";
-            return RedirectToAction("QuanLyMayTinh");
+            return View(model);
         }
 
         [HttpGet]
@@ -573,11 +597,15 @@ namespace Project.Controllers
                 startDate = new DateTime(2025, 1, 1); // Giá trị nhỏ nhất hợp lệ cho SQL Server
                 endDate = DateTime.Now; // Mặc định là ngày hiện tại
             }
-        
+
+            // Đặt thời gian bắt đầu từ 00:00:00 và thời gian kết thúc đến 23:59:59
+            startDate = startDate.Value.Date; // 00:00:00 của ngày bắt đầu
+            endDate = endDate.Value.Date.AddDays(1).AddTicks(-1); // 23:59:59 của ngày kết thúc
+
             // Lấy danh sách thống kê theo khoảng thời gian
             var thongKeList = _context.SuDungMays
                 .Where(sdm => sdm.ThoiGianBatDau >= startDate && sdm.ThoiGianKetThuc <= endDate)
-                .GroupBy(sdm => sdm.MaMay) // Nhóm theo mã máy
+                .GroupBy(sdm => sdm.MaMay) 
                 .Select(group => new ThongKeViewModel
                 {
                     MaMay = group.Key,
@@ -585,6 +613,10 @@ namespace Project.Controllers
                         .Where(mt => mt.MaMay == group.Key)
                         .Select(mt => mt.TenMay)
                         .FirstOrDefault(),
+                    TrangThai = _context.MayTinhs
+                        .Where(mt => mt.MaMay == group.Key)
+                        .Select(mt => mt.TrangThai)
+                        .FirstOrDefault(), // Lấy trạng thái máy tính
                     TongDoanhThu = group.Sum(sdm => sdm.TongTien ?? 0) // Tính tổng doanh thu trong khoảng thời gian
                 })
                 .OrderByDescending(sdm => sdm.TongDoanhThu) // Sắp xếp theo doanh thu giảm dần
@@ -616,7 +648,7 @@ namespace Project.Controllers
             // Nếu không chọn ngày, đặt giá trị mặc định
             if (!startDate.HasValue)
             {
-                startDate = new DateTime(1753, 1, 1); // Giá trị nhỏ nhất hợp lệ cho SQL Server
+                startDate = new DateTime(2025, 1, 1); // Giá trị mặc định hợp lý
             }
             if (!endDate.HasValue)
             {
@@ -646,8 +678,8 @@ namespace Project.Controllers
                 .ToList();
         
             // Truyền dữ liệu ngày bắt đầu và kết thúc để hiển thị lại trên giao diện
-            ViewData["StartDate"] = startDate.Value.ToString("yyyy-MM-dd");
-            ViewData["EndDate"] = endDate.Value.ToString("yyyy-MM-dd");
+            ViewData["StartDate"] = startDate.Value.ToString("dd/MM/yyyy");
+            ViewData["EndDate"] = endDate.Value.ToString("dd/MM/yyyy");
             ViewData["TenMay"] = mayTinh.TenMay;
             ViewData["MaMay"] = maMay;
         

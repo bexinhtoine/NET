@@ -9,7 +9,7 @@
     <!-- Thanh ngang trên cùng -->
     <div class="row bg-primary text-white py-2">
         <div class="col-md-10">
-            <h4 class="ms-3">Xin chào Quản trị viên @tenQuanTriVien</h4>
+            <h4 class="ms-3">Xin chào Quản trị viên <strong>@tenQuanTriVien</strong></h4>
         </div>
         <div class="col-md-2 text-end">
             <a href="/Home/DangXuat" class="btn btn-light btn-sm me-3">Đăng xuất</a>
@@ -48,57 +48,65 @@
 
         <!-- Nội dung chính -->
         <div class="col-md-9">
-            <div class="container mt-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="text-primary">Quản lý người dùng</h2>
-                    <form method="get" action="/Admin/QuanLyNguoiDung" class="d-flex">
-                        <input type="text" name="search" class="form-control me-2" placeholder="Tìm kiếm người dùng..." value="@ViewData["Search"]" />
-                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                    </form>
-                    <a href="/Admin/ThemNguoiDung" class="btn btn-success">+ Thêm tài khoản</a>
+            <div class="card mt-3 shadow-sm">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h4 class="mb-0" style="font-size: 1.5rem; font-weight: bold;">Quản lý người dùng</h4>
                 </div>
+                <div class="card-body">
+                    <!-- Thanh tìm kiếm và thêm tài khoản -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <form method="get" action="/Admin/QuanLyNguoiDung" class="d-flex w-75">
+                            <input type="text" name="search" class="form-control me-2 w-75" placeholder="Tìm kiếm người dùng..." value="@ViewData["Search"]" />
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </form>
+                        <a href="/Admin/ThemNguoiDung" class="btn btn-success">+ Thêm tài khoản</a>
+                    </div>
 
-                <table class="table table-bordered table-hover text-center">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>STT</th>
-                            <th>ID</th>
-                            <th>Tên đăng nhập</th>
-                            <th>Họ tên</th>
-                            <th>Số điện thoại</th>
-                            <th>Vai trò</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Count > 0)
-                        {
-                            int stt = 1; // Biến đếm STT
-                            foreach (var user in Model)
-                            {
+                    <!-- Bảng danh sách người dùng -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover text-center align-middle">
+                            <thead class="table-primary">
                                 <tr>
-                                    <td>@stt</td>
-                                    <td>@user.MaNguoiDung</td>
-                                    <td>@user.TenDangNhap</td>
-                                    <td>@user.HoTen</td>
-                                    <td>@user.SoDienThoai</td>
-                                    <td>@user.Role</td>
-                                    <td>
-                                        <a href="/Admin/ChinhSuaNguoiDung/@user.MaNguoiDung" class="btn btn-warning btn-sm">Chỉnh sửa</a>
-                                        <a href="/Admin/XoaNguoiDung/@user.MaNguoiDung" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">Xóa</a>
-                                    </td>
+                                    <th style="width: 5%;">STT</th>
+                                    <th style="width: 10%;">ID</th>
+                                    <th style="width: 20%;">Tên đăng nhập</th>
+                                    <th style="width: 20%;">Họ tên</th>
+                                    <th style="width: 15%;">Số điện thoại</th>
+                                    <th style="width: 10%;">Vai trò</th>
+                                    <th style="width: 20%;">Hành động</th>
                                 </tr>
-                                stt++; // Tăng STT
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="7" class="text-center">Không có người dùng nào.</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    int stt = 1; // Biến đếm STT
+                                    foreach (var user in Model)
+                                    {
+                                        <tr>
+                                            <td>@stt</td>
+                                            <td>@user.MaNguoiDung</td>
+                                            <td>@user.TenDangNhap</td>
+                                            <td>@user.HoTen</td>
+                                            <td>@user.SoDienThoai</td>
+                                            <td>@user.Role</td>
+                                            <td>
+                                                <a href="/Admin/ChinhSuaNguoiDung/@user.MaNguoiDung" class="btn btn-warning btn-sm">Chỉnh sửa</a>
+                                                <a href="/Admin/XoaNguoiDung?userId=@user.MaNguoiDung" class="btn btn-danger btn-sm">Xóa</a>                                          
+                                            </td>
+                                        </tr>
+                                        stt++; // Tăng STT
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center">Không có người dùng nào.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

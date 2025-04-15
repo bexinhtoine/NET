@@ -274,6 +274,14 @@ namespace Project.Controllers
                     suDungMay.ThoiGianKetThuc = DateTime.Now;
                     suDungMay.TongThoiGian = (decimal?)((suDungMay.ThoiGianKetThuc - suDungMay.ThoiGianBatDau)?.TotalHours ?? 0);
                     suDungMay.TongTien = suDungMay.TongThoiGian.Value * mayDangThue.DonGia;
+
+                    // Trường hợp tắt máy mà không bấm kết thúc và chạy lại chương trình khi thời gian quá hạn dùng tối đa
+                    if (suDungMay.TongTien < 0)
+                    {
+                        suDungMay.TongTien = 0;
+                        suDungMay.TongThoiGian = suDungMay.TongTien / mayDangThue.DonGia;
+                        suDungMay.ThoiGianKetThuc = suDungMay.ThoiGianBatDau.AddHours((double)suDungMay.TongThoiGian);
+                    }
         
                     // Cập nhật số dư người dùng
                     var nguoiDung = _context.NguoiDungs.FirstOrDefault(nd => nd.MaNguoiDung == suDungMay.MaNguoiDung);
@@ -288,7 +296,8 @@ namespace Project.Controllers
                         nguoiDung.SoDu -= suDungMay.TongTien.Value;
                         if (nguoiDung.SoDu < 0)
                         {
-                            TempData["Error"] = "Số dư không đủ để thanh toán.";
+                            nguoiDung.SoDu = 0; // Đảm bảo số dư không âm
+                            TempData["Error"] = "Số dư không đủ để thanh toán. Vui lòng nạp thêm tiền.";
                             return RedirectToAction("Home");
                         }
                     }
@@ -504,5 +513,31 @@ namespace Project.Controllers
         
             TempData["Success"] = "Thông tin cá nhân đã được cập nhật thành công.";
             return RedirectToAction("Home");
-        }    }
+        }   
+
+        [HttpGet]
+        public IActionResult LichSuSoDu()
+        {
+            string maNguoiDung = User.FindFirst("MaNguoiDung")?.Value ?? string.Empty;
+        
+            if (string.IsNullOrEmpty(maNguoiDung))
+            {
+                return RedirectToAction("DangNhap", "Home");
+            }
+        
+            var lichSuNapTien = _context.NapTiens
+                .Where(nt => nt.MaNguoiDung == maNguoiDung)
+                .OrderByDescending(nt => nt.ThoiGianNap)
+                .Select(nt => new LichSuNapTienViewModel
+                {
+                    MaNapTien = nt.MaNapTien,
+                    SoTien = nt.SoTien,
+                    PhuongThuc = nt.PhuongThuc,
+                    ThoiGianNap = nt.ThoiGianNap ?? DateTime.MinValue
+                })
+                .ToList();
+        
+            return View(lichSuNapTien);
+        } 
+    }
 }

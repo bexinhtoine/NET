@@ -1,15 +1,16 @@
 @model List<Project.Models.Admin.ThongKeViewModel>
 
 @{
-    ViewData["Title"] = "Thống kê theo máy";
+    ViewData["Title"] = "Chi tiết thống kê theo thời gian";
     var tenQuanTriVien = User.Claims.FirstOrDefault(c => c.Type == "HoTen")?.Value;
+    var tongDoanhThu = Model?.Sum(item => item.TongDoanhThu) ?? 0; // Tính tổng doanh thu
 }
 
 <div class="container-fluid">
     <!-- Thanh ngang trên cùng -->
     <div class="row bg-primary text-white py-2">
         <div class="col-md-10">
-            <h4 class="ms-3">Xin chào Quản trị viên @tenQuanTriVien</h4>
+            <h4 class="ms-3">Xin chào Quản trị viên <strong>@tenQuanTriVien</strong></h4>
         </div>
         <div class="col-md-2 text-end">
             <a href="/Home/DangXuat" class="btn btn-light btn-sm me-3">Đăng xuất</a>
@@ -48,55 +49,73 @@
 
         <!-- Nội dung chính -->
         <div class="col-md-9">
-            <div class="container mt-5">
-                <h2 class="text-center text-primary mb-4">Chi tiết thống kê của máy @ViewData["TenMay"] (@ViewData["MaMay"])</h2>
-                <h4 class="text-center text-primary mb-4">Từ ngày @ViewData["StartDate"] đến ngày @ViewData["EndDate"]</h4>
-            
-                <a href="/Admin/ThongKeTheoMay" class="btn btn-secondary mb-4">Quay lại</a>
-            
-                <table class="table table-bordered table-hover text-center">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>STT</th>
-                            <th>Thời gian bắt đầu</th>
-                            <th>Thời gian kết thúc</th>
-                            <th>Doanh thu</th>
-                            <th>Tên người dùng</th>
-                            <th>Số điện thoại</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Count > 0)
-                        {
-                            int stt = 1;
-                            foreach (var item in Model)
-                            {
+            <div class="card mt-3 shadow-sm">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h4 class="mb-0" style="font-size: 1.5rem; font-weight: bold;">Chi tiết thống kê của máy @ViewData["TenMay"] (@ViewData["MaMay"])</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="text-center text-primary mb-4">
+                        Từ ngày <strong>@ViewData["StartDate"]</strong> đến ngày <strong>@ViewData["EndDate"]</strong>
+                    </h5>
+
+                    <!-- Hiển thị tổng doanh thu -->
+                    <div class="mb-4 p-3 border rounded d-flex align-items-center justify-content-center" style="background-color: #d4edda;">
+                        <h5 class="text-success fw-bold mb-0 me-2">Tổng doanh thu:</h5>
+                        <h5 class="text-danger fw-bold mb-0">@tongDoanhThu.ToString("N0") VNĐ</h5>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <a href="/Admin/ThongKeTheoThoiGian" class="btn btn-secondary">Quay lại</a>
+                        <button class="btn btn-success" onclick="window.print()">In báo cáo</button>
+                    </div>
+
+                    <!-- Bảng thống kê -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover text-center align-middle">
+                            <thead class="table-primary">
                                 <tr>
-                                    <td>@stt</td>
-                                    <td>@item.ThoiGianBatDau?.ToString("dd/MM/yyyy HH:mm")</td>
-                                    <td>@item.ThoiGianKetThuc?.ToString("dd/MM/yyyy HH:mm")</td>
-                                    <td>@item.TongDoanhThu.ToString("C")</td>
-                                    <td>@item.TenNguoiDung</td>
-                                    <td>@item.SoDienThoai</td>
+                                    <th style="width: 5%;">STT</th>
+                                    <th style="width: 20%;">Thời gian bắt đầu</th>
+                                    <th style="width: 20%;">Thời gian kết thúc</th>
+                                    <th style="width: 15%;">Doanh thu</th>
+                                    <th style="width: 20%;">Tên người dùng</th>
+                                    <th style="width: 20%;">Số điện thoại</th>
                                 </tr>
-                                stt++;
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="6" class="text-center">Không có dữ liệu chi tiết.</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    int stt = 1;
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@stt</td>
+                                            <td>@item.ThoiGianBatDau?.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>@item.ThoiGianKetThuc?.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>@item.TongDoanhThu.ToString("N0") VNĐ</td>
+                                            <td>@item.TenNguoiDung</td>
+                                            <td>@item.SoDienThoai</td>
+                                        </tr>
+                                        stt++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center">Không có dữ liệu chi tiết.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    h2 {
+    h2, h4, h5 {
         font-weight: bold;
     }
 

@@ -68,8 +68,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cWG9hTWF5VGluaC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/University/Lap_trinh_NET/Project/Project/Views/Admin/XoaTaiKhoan.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cWG9hVGFpS2hvYW4uY3NodG1s
+[D:/University/Lap_trinh_NET/Project/Project/Views/Admin/XoaNguoiDung.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cWG9hTmd1b2lEdW5nLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/University/Lap_trinh_NET/Project/Project/Views/Home/AccessDenied.cshtml]
@@ -98,6 +98,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/University/Lap_trinh_NET/Project/Project/Views/KhachHang/LichSu.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2hhY2hIYW5nXExpY2hTdS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/University/Lap_trinh_NET/Project/Project/Views/KhachHang/LichSuSoDu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2hhY2hIYW5nXExpY2hTdVNvRHUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/University/Lap_trinh_NET/Project/Project/Views/KhachHang/SoDu.cshtml]

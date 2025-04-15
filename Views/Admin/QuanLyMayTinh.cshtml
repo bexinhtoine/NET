@@ -9,7 +9,7 @@
     <!-- Thanh ngang trên cùng -->
     <div class="row bg-primary text-white py-2">
         <div class="col-md-10">
-            <h4 class="ms-3">Xin chào Quản trị viên @tenQuanTriVien</h4>
+            <h4 class="ms-3">Xin chào Quản trị viên <strong>@tenQuanTriVien</strong></h4>
         </div>
         <div class="col-md-2 text-end">
             <a href="/Home/DangXuat" class="btn btn-light btn-sm me-3">Đăng xuất</a>
@@ -48,59 +48,67 @@
 
         <!-- Nội dung chính -->
         <div class="col-md-9">
-            <div class="container mt-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="text-primary">Quản lý máy tính</h2>
+            <div class="card mt-3 shadow-sm">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h4 class="mb-0" style="font-size: 1.5rem; font-weight: bold;">Quản lý máy tính</h4>
                 </div>
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <form method="get" action="/Admin/QuanLyMayTinh" class="d-flex">
-                        <input type="text" name="search" class="form-control me-2" placeholder="Tìm kiếm máy tính..." value="@ViewData["Search"]" />
-                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                    </form>
-                    <a href="/Admin/ThemMayTinh" class="btn btn-success">+ Thêm máy tính</a>
-                </div>
+                <div class="card-body">
+                    <!-- Thanh tìm kiếm và thêm máy tính -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <form method="get" action="/Admin/QuanLyMayTinh" class="d-flex w-75">
+                            <input type="text" name="search" class="form-control me-2 w-75" placeholder="Tìm kiếm máy tính..." value="@ViewData["Search"]" />
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </form>
+                        <a href="/Admin/ThemMayTinh" class="btn btn-success">+ Thêm máy tính</a>
+                    </div>
 
-                <table class="table table-bordered table-hover text-center">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>STT</th>
-                            <th>Mã máy</th>
-                            <th>Tên máy</th>
-                            <th>Trạng thái</th>
-                            <th>Đơn giá</th>
-                            <th>Mô tả</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Count > 0)
-                        {
-                            int stt = 1; // Biến đếm STT
-                            foreach (var may in Model)
-                            {
+                    <!-- Bảng danh sách máy tính -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover text-center align-middle">
+                            <thead class="table-primary">
                                 <tr>
-                                    <td>@stt</td>
-                                    <td>@may.MaMay</td>
-                                    <td>@may.TenMay</td>
-                                    <td>@may.TrangThai</td>
-                                    <td>@may.DonGia VNĐ</td>
-                                    <td>@may.MoTa</td>
-                                    <td>
-                                        <a href="/Admin/ChinhSuaMayTinh/@may.MaMay" class="btn btn-warning btn-sm">Chỉnh sửa</a>
-                                        <a href="/Admin/XoaMayTinh/@may.MaMay" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa máy tính này?');">Xóa</a>
-                                    </td>
+                                    <th style="width: 5%;">STT</th>
+                                    <th style="width: 15%;">Mã máy</th>
+                                    <th style="width: 10%;">Tên máy</th> <!-- Giảm kích thước cột Tên máy -->
+                                    <th style="width: 15%;">Trạng thái</th>
+                                    <th style="width: 15%;">Đơn giá</th>
+                                    <th style="width: 20%;">Mô tả</th>
+                                    <th style="width: 20%;">Hành động</th> <!-- Tăng kích thước cột Hành động -->
                                 </tr>
-                                stt++; // Tăng STT
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="6" class="text-center">Không có máy tính nào.</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    int stt = 1; // Biến đếm STT
+                                    foreach (var may in Model)
+                                    {
+                                        <tr>
+                                            <td>@stt</td>
+                                            <td>@may.MaMay</td>
+                                            <td>@may.TenMay</td>
+                                            <td>@may.TrangThai</td>
+                                            <td>@may.DonGia.ToString("N0") VNĐ</td>
+                                            <td>@may.MoTa</td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <a href="/Admin/ChinhSuaMayTinh/@may.MaMay" class="btn btn-warning btn-sm me-2">Chỉnh sửa</a>
+                                                    <a href="/Admin/XoaMayTinh/@may.MaMay" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa máy tính này?');">Xóa</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        stt++; // Tăng STT
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center">Không có máy tính nào.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

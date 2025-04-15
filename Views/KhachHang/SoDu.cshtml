@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <div class="row mt-3">
+    <div class="row">
         <!-- Thanh chức năng bên trái -->
         <div class="col-md-3 bg-light vh-100">
             <h5 class="mt-3">Chức năng</h5>
@@ -26,8 +26,18 @@
                 <li class="list-group-item">
                     <a href="/KhachHang/LichSu" class="text-decoration-none">Xem lịch sử sử dụng</a>
                 </li>
-                <li class="list-group-item">
-                    <a href="/KhachHang/SoDu" class="text-decoration-none">Số dư</a>
+                 <li class="list-group-item">
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#thongKeSubMenu" aria-expanded="false" aria-controls="thongKeSubMenu">
+                        Số dư
+                    </a>
+                    <ul class="collapse list-group ms-3" id="thongKeSubMenu">
+                        <li class="list-group-item">
+                            <a href="/KhachHang/LichSuSoDu" class="text-decoration-none">Lịch sử nạp tiền</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="/KhachHang/SoDu" class="text-decoration-none">Nạp tiền</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="list-group-item">
                     <a href="/KhachHang/ThayDoiThongTinCaNhan" class="text-decoration-none">Thay đổi thông tin cá nhân</a>
@@ -41,21 +51,21 @@
         <!-- Nội dung chính -->
         <div class="col-md-9">
             <!-- Hiển thị số dư -->
-            <div class="card mb-3">
-                <div class="card-header bg-warning text-dark">
+            <div class="card mt-3">
+                <div class="card-header bg-warning text-dark text-center">
                     <h4 class="mb-0">Số dư tài khoản</h4>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info text-center" role="alert">
                         <h5>Số dư hiện tại của bạn là:</h5>
-                        <h3 class="text-primary"><strong>@Model.SoDu.ToString("C")</strong></h3>
+                        <h3 class="text-primary"><strong>@Model.SoDu.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</strong></h3>
                     </div>
                 </div>
             </div>
 
             <!-- Thông tin nạp tiền -->
             <div class="card mb-3">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary text-white text-center">
                     <h4 class="mb-0">Thông tin nạp tiền</h4>
                 </div>
                 <div class="card-body">
@@ -70,7 +80,7 @@
 
             <!-- Form nạp tiền -->
             <div class="card">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-success text-white text-center">
                     <h4 class="mb-0">Xác nhận nạp tiền</h4>
                 </div>
                 <div class="card-body">

@@ -1,0 +1,71 @@
+@model Project.Models.Admin.XoaNguoiDungViewModel
+
+@{
+    ViewData["Title"] = "Xóa tài khoản";
+}
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white text-center">
+                    <h4>Xóa tài khoản</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Hiển thị thông tin người dùng -->
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>ID:</strong></label>
+                            <input type="text" class="form-control" value="@Model.MaNguoiDung" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Họ tên:</strong></label>
+                            <input type="text" class="form-control" value="@Model.HoTen" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Số điện thoại:</strong></label>
+                            <input type="text" class="form-control" value="@Model.SoDienThoai" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Số dư:</strong></label>
+                            <input type="text" class="form-control text-danger" value="@Model.SoDu.ToString("N0") VNĐ" readonly />
+                        </div>
+                    </form>
+
+                    <!-- Trường hợp còn số dư -->
+                    @if (Model.SoDu > 0)
+                    {
+                        <div class="alert alert-danger text-center">
+                            <strong>Người dùng này có số dư tài khoản lớn hơn 0. Bạn không thể xóa.</strong>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/Admin/QuanLyNguoiDung" class="btn btn-secondary">OK</a>
+                        </div>
+                    }
+                    else if (Model.CoDuLieuLienQuan)
+                    {
+                        <div class="alert alert-warning text-center">
+                            <strong>Người dùng này có dữ liệu liên quan. Bạn không nên xóa.</strong>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/Admin/QuanLyNguoiDung" class="btn btn-secondary">OK</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info text-center">
+                            <p>Bạn có chắc chắn muốn xóa người dùng này không?</p>
+                        </div>
+                        <div class="text-center mt-3">
+                            <form method="post" action="/Admin/XoaNguoiDungConfirmed" class="d-inline">
+                                <input type="hidden" name="userId" value="@Model.MaNguoiDung" />
+                                <button type="submit" class="btn btn-danger me-2">Xóa</button>
+                            </form>
+                            <a href="/Admin/QuanLyNguoiDung" class="btn btn-secondary">Hủy</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

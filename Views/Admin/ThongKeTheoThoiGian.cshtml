@@ -3,13 +3,14 @@
 @{
     ViewData["Title"] = "Thống kê theo thời gian";
     var tenQuanTriVien = User.Claims.FirstOrDefault(c => c.Type == "HoTen")?.Value;
+    var tongDoanhThu = Model?.Sum(item => item.TongDoanhThu) ?? 0; // Tính tổng doanh thu
 }
 
 <div class="container-fluid">
     <!-- Thanh ngang trên cùng -->
     <div class="row bg-primary text-white py-2">
         <div class="col-md-10">
-            <h4 class="ms-3">Xin chào Quản trị viên @tenQuanTriVien</h4>
+            <h4 class="ms-3">Xin chào Quản trị viên <strong>@tenQuanTriVien</strong></h4>
         </div>
         <div class="col-md-2 text-end">
             <a href="/Home/DangXuat" class="btn btn-light btn-sm me-3">Đăng xuất</a>
@@ -48,87 +49,76 @@
 
         <!-- Nội dung chính -->
         <div class="col-md-9">
-            <div class="container mt-5">
-                <h2 class="text-center text-primary mb-4">Thống kê theo thời gian</h2>
+            <div class="card mt-3 shadow-sm">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h4 class="mb-0" style="font-size: 1.5rem; font-weight: bold;">Thống kê theo thời gian</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Form chọn khoảng thời gian -->
+                    <form method="get" action="/Admin/ThongKeTheoThoiGian" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label for="startDate" class="form-label fw-bold">Ngày bắt đầu</label>
+                                <input type="date" id="startDate" name="startDate" class="form-control" value="@ViewData["StartDate"]" />
+                            </div>
+                            <div class="col-md-5">
+                                <label for="endDate" class="form-label fw-bold">Ngày kết thúc</label>
+                                <input type="date" id="endDate" name="endDate" class="form-control" value="@ViewData["EndDate"]" />
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">Lọc</button>
+                            </div>
+                        </div>
+                    </form>
 
-                <!-- Form chọn khoảng thời gian -->
-                <form method="get" action="/Admin/ThongKeTheoThoiGian" class="mb-4">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <label for="startDate" class="form-label">Ngày bắt đầu</label>
-                            <input type="date" id="startDate" name="startDate" class="form-control" value="@ViewData["StartDate"]" />
-                        </div>
-                        <div class="col-md-5">
-                            <label for="endDate" class="form-label">Ngày kết thúc</label>
-                            <input type="date" id="endDate" name="endDate" class="form-control" value="@ViewData["EndDate"]" />
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">Lọc</button>
-                        </div>
+                    <!-- Hiển thị tổng doanh thu -->
+                    <div class="mb-4 p-3 border rounded d-flex align-items-center justify-content-center" style="background-color: #d4edda;">
+                        <h5 class="text-success fw-bold mb-0 me-2">Tổng doanh thu:</h5>
+                        <h5 class="text-danger fw-bold mb-0">@tongDoanhThu.ToString("N0") VNĐ</h5>
                     </div>
-                </form>
 
-                <!-- Bảng thống kê -->
-                <table class="table table-bordered table-hover text-center">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>STT</th>
-                            <th>Mã máy</th>
-                            <th>Tên máy</th>
-                            <th>Doanh thu</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Count > 0)
-                        {
-                            int stt = 1;
-                            foreach (var item in Model)
-                            {
+                    <!-- Bảng thống kê -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover text-center align-middle">
+                            <thead class="table-primary">
                                 <tr>
-                                    <td>@stt</td>
-                                    <td>@item.MaMay</td>
-                                    <td>@item.TenMay</td>
-                                    <td>@item.TongDoanhThu.ToString("C")</td>
-                                    <td>
-                                        <a href="/Admin/ThongKeChiTietThoiGian?maMay=@item.MaMay" class="btn btn-info btn-sm">Xem chi tiết</a>
-                                    </td>
+                                    <th style="width: 5%;">STT</th>
+                                    <th style="width: 15%;">Mã máy</th>
+                                    <th style="width: 20%;">Tên máy</th>
+                                    <th style="width: 15%;">Trạng thái</th> 
+                                    <th style="width: 20%;">Doanh thu</th>
+                                    <th style="width: 15%;">Thao tác</th>
                                 </tr>
-                                stt++;
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="7" class="text-center">Không có dữ liệu thống kê.</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    int stt = 1;
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@stt</td>
+                                            <td>@item.MaMay</td>
+                                            <td>@item.TenMay</td>
+                                            <td>@item.TrangThai</td> <!-- Hiển thị trạng thái máy -->
+                                            <td>@item.TongDoanhThu.ToString("N0") VNĐ</td>
+                                            <td>
+                                                <a href="/Admin/ThongKeChiTietThoiGian?maMay=@item.MaMay&startDate=@ViewData["StartDate"]&endDate=@ViewData["EndDate"]" class="btn btn-info btn-sm">Xem chi tiết</a>                                            </td>
+                                        </tr>
+                                        stt++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center">Không có dữ liệu thống kê.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    h2 {
-        font-weight: bold;
-    }
-
-    .table {
-        font-size: 16px;
-    }
-
-    .table th {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .btn {
-        font-size: 14px;
-    }
-
-    .vh-100 {
-        height: 100vh;
-    }
-</style>

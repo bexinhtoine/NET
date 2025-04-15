@@ -45,44 +45,44 @@
             </ul>
         </div>
         
-                <!-- Nội dung chính -->
+        <!-- Nội dung chính -->
         <div class="col-md-9">
             <div class="container mt-4">
                 <div class="row g-4">
                     <!-- Hàng 1 -->
                     <div class="col-md-6">
-                        <div class="card text-center shadow-sm border-0 rounded-3">
+                        <div class="card text-center shadow-sm border-0 rounded-3 card-large bg-lightblue">
                             <div class="card-body">
-                                <h5 class="card-title text-primary">Khách hàng</h5>
-                                <p class="card-text fs-4 fw-bold">@Model.SoNguoiDung</p>
+                                <h5 class="card-title text-primary fs-4">Khách hàng</h5>
+                                <p class="card-text fs-1 fw-bold">@Model.SoNguoiDung</p>
                             </div>
                         </div>
                     </div>
         
                     <div class="col-md-6">
-                        <div class="card text-center shadow-sm border-0 rounded-3">
+                        <div class="card text-center shadow-sm border-0 rounded-3 card-large bg-lightgreen">
                             <div class="card-body">
-                                <h5 class="card-title text-success">Quản trị viên</h5>
-                                <p class="card-text fs-4 fw-bold">@Model.SoQuanTriVien</p>
+                                <h5 class="card-title text-success fs-4">Quản trị viên</h5>
+                                <p class="card-text fs-1 fw-bold">@Model.SoQuanTriVien</p>
                             </div>
                         </div>
                     </div>
         
                     <!-- Hàng 2 -->
                     <div class="col-md-6">
-                        <div class="card text-center shadow-sm border-0 rounded-3">
+                        <div class="card text-center shadow-sm border-0 rounded-3 card-large bg-lightyellow">
                             <div class="card-body">
-                                <h5 class="card-title text-warning">Máy tính</h5>
-                                <p class="card-text fs-4 fw-bold">@Model.SoMayTinh</p>
+                                <h5 class="card-title text-warning fs-4">Máy tính</h5>
+                                <p class="card-text fs-1 fw-bold">@Model.SoMayTinh</p>
                             </div>
                         </div>
                     </div>
         
                     <div class="col-md-6">
-                        <div class="card text-center shadow-sm border-0 rounded-3">
+                        <div class="card text-center shadow-sm border-0 rounded-3 card-large bg-lightred">
                             <div class="card-body">
-                                <h5 class="card-title text-danger">Doanh thu</h5>
-                                <p class="card-text fs-4 fw-bold">@Model.TongDoanhThu VNĐ</p>
+                                <h5 class="card-title text-danger fs-4">Doanh thu</h5>
+                                <p class="card-text fs-1 fw-bold">@Model.TongDoanhThu VNĐ</p>
                             </div>
                         </div>
                     </div>
@@ -91,3 +91,26 @@
         </div>
     </div>
 </div>
+
+<style>
+    .bg-lightblue {
+        background-color: #cce5ff; /* Màu xanh nhạt */
+    }
+    .bg-lightgreen {
+        background-color: #d4edda; /* Màu xanh lá nhạt */
+    }
+    .bg-lightyellow {
+        background-color: #fff3cd; /* Màu vàng nhạt */
+    }
+    .bg-lightred {
+        background-color: #f8d7da; /* Màu đỏ nhạt */
+    }
+    .card-large {
+        height: 250px; /* Tăng chiều cao */
+    }
+    .card-large .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+</style>

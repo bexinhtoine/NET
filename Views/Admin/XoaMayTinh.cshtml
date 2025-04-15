@@ -1,28 +1,44 @@
 @{
-    ViewData["Title"] = "Xóa máy tính";
+    ViewData["Title"] = "Xóa người dùng";
 }
 
 <div class="container mt-5">
-    <h2 class="text-danger text-center">Xóa máy tính</h2>
+    <h2 class="text-danger text-center">Xóa người dùng</h2>
 
+    <!-- Hiển thị thông báo lỗi -->
     @if (TempData["Error"] != null)
     {
         <div class="alert alert-danger">
-            @TempData["Error"]
+            <strong>Lỗi:</strong> @TempData["Error"]
         </div>
     }
 
+    <!-- Hiển thị cảnh báo -->
     @if (TempData["Warning"] != null)
     {
         <div class="alert alert-warning">
-            @TempData["Warning"]
+            <strong>Cảnh báo:</strong> @TempData["Warning"]
         </div>
     }
 
+    <!-- Hiển thị thông báo thành công -->
     @if (TempData["Message"] != null)
     {
         <div class="alert alert-success">
-            @TempData["Message"]
+            <strong>Thành công:</strong> @TempData["Message"]
+        </div>
+    }
+
+    <!-- Hiển thị xác nhận xóa -->
+    @if (TempData["ConfirmDelete"] != null)
+    {
+        <div class="alert alert-info">
+            <p>Bạn có chắc chắn muốn xóa người dùng <strong>@TempData["UserName"]</strong> không?</p>
+            <form method="post" action="/Admin/XoaNguoiDung">
+                <input type="hidden" name="userId" value="@TempData["UserId"]" />
+                <button type="submit" class="btn btn-danger">Xóa</button>
+                <a href="/Admin/QuanLyNguoiDung" class="btn btn-secondary">Hủy</a>
+            </form>
         </div>
     }
 </div>

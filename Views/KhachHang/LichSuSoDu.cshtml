@@ -1,0 +1,105 @@
+@model IEnumerable<Project.Models.KhachHang.LichSuNapTienViewModel>
+
+@{
+    ViewData["Title"] = "Lịch sử nạp tiền";
+    var tongSoTien = Model.Sum(x => x.SoTien); // Tính tổng số tiền đã nạp
+}
+
+<div class="container-fluid mt-4">
+    <!-- Thanh ngang trên cùng -->
+    <div class="row bg-primary text-white py-2">
+        <div class="col-md-10">
+            <h4 class="ms-3">Chào mừng quý khách đến với quán NET "Thiên Đường"</h4>
+        </div>
+        <div class="col-md-2 text-end">
+            <a href="/Home/DangXuat" class="btn btn-light btn-sm me-3">Đăng xuất</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Thanh chức năng bên trái -->
+        <div class="col-md-3 bg-light vh-100">
+            <h5 class="mt-3">Chức năng</h5>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="/KhachHang/Home" class="text-decoration-none">Home</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/KhachHang/LichSu" class="text-decoration-none">Xem lịch sử sử dụng</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#thongKeSubMenu" aria-expanded="false" aria-controls="thongKeSubMenu">
+                        Số dư
+                    </a>
+                    <ul class="collapse list-group ms-3" id="thongKeSubMenu">
+                        <li class="list-group-item">
+                            <a href="/KhachHang/LichSuSoDu" class="text-decoration-none">Lịch sử nạp tiền</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="/KhachHang/SoDu" class="text-decoration-none">Nạp tiền</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="list-group-item">
+                    <a href="/KhachHang/ThayDoiThongTinCaNhan" class="text-decoration-none">Thay đổi thông tin cá nhân</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/KhachHang/HoTro" class="text-decoration-none">Liên hệ hỗ trợ</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Nội dung chính -->
+        <div class="col-md-9">
+            <!-- Card bao bọc toàn bộ nội dung -->
+            <div class="card mt-3">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h3 class="mb-0">Lịch sử nạp tiền</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Tổng số tiền đã nạp -->
+                    <div class="alert alert-info text-center py-3" style="font-size: 1.5rem; font-weight: bold;">
+                        Tổng số tiền đã nạp: <span class="text-success">@tongSoTien.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</span>
+                    </div>
+        
+                    <!-- Bảng lịch sử nạp tiền -->
+                    @if (!Model.Any())
+                    {
+                        <div class="alert alert-warning text-center">
+                            <h5>Không có giao dịch nạp tiền nào.</h5>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover text-center">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th style="width: 5%;">STT</th>
+                                        <th style="width: 20%;">Mã nạp tiền</th>
+                                        <th style="width: 20%;">Số tiền</th>
+                                        <th style="width: 25%;">Phương thức</th>
+                                        <th style="width: 30%;">Thời gian nạp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < Model.Count(); i++)
+                                    {
+                                        var item = Model.ElementAt(i);
+                                        <tr>
+                                            <td>@(i + 1)</td>
+                                            <td>@item.MaNapTien</td>
+                                            <td>@item.SoTien.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</td>
+                                            <td>@item.PhuongThuc</td>
+                                            <td>@item.ThoiGianNap.ToString("HH:mm:ss dd/MM/yyyy")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

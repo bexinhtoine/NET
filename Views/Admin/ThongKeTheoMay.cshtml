@@ -3,13 +3,14 @@
 @{
     ViewData["Title"] = "Thống kê theo máy";
     var tenQuanTriVien = User.Claims.FirstOrDefault(c => c.Type == "HoTen")?.Value;
+    var tongDoanhThu = Model?.Sum(item => item.TongDoanhThu) ?? 0;
 }
 
 <div class="container-fluid">
     <!-- Thanh ngang trên cùng -->
     <div class="row bg-primary text-white py-2">
         <div class="col-md-10">
-            <h4 class="ms-3">Xin chào Quản trị viên @tenQuanTriVien</h4>
+            <h4 class="ms-3">Xin chào Quản trị viên <strong></strong>@tenQuanTriVien</strong></h4>
         </div>
         <div class="col-md-2 text-end">
             <a href="/Home/DangXuat" class="btn btn-light btn-sm me-3">Đăng xuất</a>
@@ -48,80 +49,77 @@
 
         <!-- Nội dung chính -->
         <div class="col-md-9">
-            <div class="container mt-5">
-                <h2 class="text-center text-primary mb-4">Thống kê theo máy</h2>
-            
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <a href="/Admin/Home" class="btn btn-secondary">Quay lại</a>
-                    <button class="btn btn-success" onclick="window.print()">In báo cáo</button>
+            <div class="card mt-3 shadow-sm">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h4 class="mb-0" style="font-size: 1.5rem; font-weight: bold;">Thống kê theo máy</h4>
                 </div>
-            
-                <table class="table table-bordered table-hover text-center">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>STT</th>
-                            <th>Mã máy</th>
-                            <th>Tên máy</th>
-                            <th>Trạng thái</th>
-                            <th>Số lần sử dụng</th>
-                            <th>Tổng giờ sử dụng</th>
-                            <th>Tổng doanh thu</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Count > 0)
-                        {
-                            int stt = 1;
-                            foreach (var item in Model)
-                            {
+                <div class="card-body">
+
+                    <!-- Hiển thị tổng doanh thu -->
+                    <div class="mb-4 p-3 border rounded d-flex align-items-center justify-content-center" style="background-color: #d4edda;">
+                        <h5 class="text-success fw-bold mb-0 me-2">Tổng doanh thu:</h5>
+                        <h5 class="text-danger fw-bold mb-0">@tongDoanhThu.ToString("N0") VNĐ</h5>
+                    </div>
+                    
+                    <!-- Form tìm kiếm -->
+                    <form method="get" action="/Admin/ThongKeTheoMay" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <input type="text" name="search" class="form-control" placeholder="Nhập mã máy hoặc tên máy để tìm kiếm..." value="@ViewData["Search"]" />
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Bảng thống kê -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover text-center align-middle">
+                            <thead class="table-primary">
                                 <tr>
-                                    <td>@stt</td>
-                                    <td>@item.MaMay</td>
-                                    <td>@item.TenMay</td>
-                                    <td>@item.TrangThai</td>
-                                    <td>@item.SoLanSuDung</td>
-                                    <td>@item.TongGioSuDung.ToString("0.00") giờ</td>
-                                    <td>@item.TongDoanhThu.ToString("C")</td>
-                                    <td>
-                                        <a href="/Admin/ThongKeChiTietMay?maMay=@item.MaMay" class="btn btn-info btn-sm">Xem chi tiết</a>
-                                    </td>
+                                    <th style="width: 5%;">STT</th>
+                                    <th style="width: 15%;">Mã máy</th>
+                                    <th style="width: 10%;">Tên máy</th>
+                                    <th style="width: 15%;">Trạng thái</th>
+                                    <th style="width: 10%;">Số lần sử dụng</th>
+                                    <th style="width: 15%;">Tổng giờ sử dụng</th>
+                                    <th style="width: 15%;">Tổng doanh thu</th>
+                                    <th style="width: 20%;">Thao tác</th>
                                 </tr>
-                                stt++;
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="8" class="text-center">Không có dữ liệu thống kê.</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    int stt = 1;
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@stt</td>
+                                            <td>@item.MaMay</td>
+                                            <td>@item.TenMay</td>
+                                            <td>@item.TrangThai</td>
+                                            <td>@item.SoLanSuDung</td>
+                                            <td>@item.TongGioSuDung.ToString("0.00") giờ</td>
+                                            <td>@item.TongDoanhThu.ToString("N0") VNĐ</td>
+                                            <td>
+                                                <a href="/Admin/ThongKeChiTietMay?maMay=@item.MaMay" class="btn btn-info btn-sm">Xem chi tiết</a>
+                                            </td>
+                                        </tr>
+                                        stt++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="8" class="text-center">Không có dữ liệu thống kê.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    h2 {
-        font-weight: bold;
-    }
-
-    .table {
-        font-size: 16px;
-    }
-
-    .table th {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .btn {
-        font-size: 14px;
-    }
-
-    .vh-100 {
-        height: 100vh;
-    }
-</style>
