@@ -452,7 +452,7 @@ namespace Project.Controllers
             {
                 HoTen = nguoiDung.HoTen,
                 TenDangNhap = nguoiDung.TenDangNhap,
-                SoDienThoai = nguoiDung.SoDienThoai,
+                SoDienThoai = nguoiDung.SoDienThoai
             };
         
             return View(viewModel);
@@ -478,8 +478,31 @@ namespace Project.Controllers
             {
                 return RedirectToAction("DangNhap", "Home");
             }
-        
-            // Kiểm tra số điện thoại có đủ 10 số không
+
+            // Kiểm tra Họ tên không được trống
+            if (string.IsNullOrWhiteSpace(model.HoTen))
+            {
+                ModelState.AddModelError("HoTen", "Họ tên không được để trống.");
+                return View(model);
+            }
+
+            // Kiểm tra Tên đăng nhập không được trống
+            if (string.IsNullOrWhiteSpace(model.TenDangNhap))
+            {
+                ModelState.AddModelError("TenDangNhap", "Tên đăng nhập không được để trống.");
+                return View(model);
+            }
+
+            // Kiểm tra Tên đăng nhập không được trùng
+            var tenDangNhapTrung = _context.NguoiDungs
+                .Any(nd => nd.TenDangNhap == model.TenDangNhap && nd.MaNguoiDung != maNguoiDung);
+            if (tenDangNhapTrung)
+            {
+                ModelState.AddModelError("TenDangNhap", "Tên đăng nhập đã được sử dụng bởi người khác.");
+                return View(model);
+            }
+
+            // Kiểm tra số điện thoại có đúng định dạng
             if (string.IsNullOrEmpty(model.SoDienThoai) || model.SoDienThoai.Length != 10 || !model.SoDienThoai.All(char.IsDigit))
             {
                 ModelState.AddModelError("SoDienThoai", "Số điện thoại phải có đúng 10 chữ số.");
@@ -487,33 +510,36 @@ namespace Project.Controllers
             }
         
             // Kiểm tra mật khẩu hiện tại
-            if (nguoiDung.MatKhau != model.MatKhauHienTai)
+            if (!string.IsNullOrEmpty(model.MatKhauHienTai) && nguoiDung.MatKhau != model.MatKhauHienTai)
             {
                 ModelState.AddModelError("MatKhauHienTai", "Mật khẩu hiện tại không đúng.");
                 return View(model);
             }
         
-            // Cập nhật thông tin
+            // Cập nhật thông tin cá nhân
             nguoiDung.HoTen = model.HoTen;
             nguoiDung.TenDangNhap = model.TenDangNhap;
             nguoiDung.SoDienThoai = model.SoDienThoai;
         
             // Cập nhật mật khẩu nếu có
-            if (!string.IsNullOrEmpty(model.MatKhauMoi) && model.MatKhauMoi == model.XacNhanMatKhauMoi)
+            if (!string.IsNullOrEmpty(model.MatKhauMoi))
             {
-                nguoiDung.MatKhau = model.MatKhauMoi;
-            }
-            else if (!string.IsNullOrEmpty(model.MatKhauMoi))
-            {
-                ModelState.AddModelError("XacNhanMatKhauMoi", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
-                return View(model);
+                if (model.MatKhauMoi == model.XacNhanMatKhauMoi)
+                {
+                    nguoiDung.MatKhau = model.MatKhauMoi;
+                }
+                else
+                {
+                    ModelState.AddModelError("XacNhanMatKhauMoi", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
+                    return View(model);
+                }
             }
         
             _context.SaveChanges();
         
             TempData["Success"] = "Thông tin cá nhân đã được cập nhật thành công.";
-            return RedirectToAction("Home");
-        }   
+            return RedirectToAction("ThayDoiThongTinCaNhan");
+        }
 
         [HttpGet]
         public IActionResult LichSuSoDu()

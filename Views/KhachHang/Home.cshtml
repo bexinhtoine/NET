@@ -127,7 +127,7 @@
                                     </div>
                                 </form>
                             <div class="alert alert-info"></div>
-                                <h5><i class="bi bi-info-circle-fill"></i> Số dư hiện tại của bạn là: <strong>@Model.SoDu.ToString("C")</strong> </h5>
+                                <h5><i class="bi bi-info-circle-fill"></i> Số dư hiện tại của bạn là: <strong>@Model.SoDu.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</strong> </h5>
                             </div>
                             <!-- Bảng danh sách máy -->
                             <div class="table-responsive">
