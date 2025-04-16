@@ -253,49 +253,6 @@ namespace Project.Controllers
         }
 
         [HttpGet]
-        public IActionResult XoaTaiKhoan(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                TempData["Error"] = "ID người dùng không hợp lệ.";
-                return RedirectToAction("QuanLyNguoiDung");
-            }
-        
-            // Tìm người dùng theo ID
-            var nguoiDung = _context.NguoiDungs.FirstOrDefault(nd => nd.MaNguoiDung == id);
-        
-            if (nguoiDung == null)
-            {
-                TempData["Error"] = "Không tìm thấy người dùng.";
-                return RedirectToAction("QuanLyNguoiDung");
-            }
-        
-            // Kiểm tra nếu người dùng đang sử dụng máy
-            var suDungMay = _context.SuDungMays.FirstOrDefault(sdm => sdm.MaNguoiDung == id && sdm.ThoiGianKetThuc == null);
-            if (suDungMay != null && nguoiDung.SoDu > 0)
-            {
-                TempData["Error"] = "Người dùng đang sử dụng máy và còn số dư. Không thể xóa.";
-                return RedirectToAction("QuanLyNguoiDung");
-            }
-        
-            // Kiểm tra nếu người dùng từng sử dụng máy
-            var daSuDungMay = _context.SuDungMays.Any(sdm => sdm.MaNguoiDung == id);
-            if (daSuDungMay)
-            {
-                TempData["Warning"] = "Người dùng này đã từng sử dụng máy.";
-            }
-        
-            // Thay đổi trạng thái của người dùng
-            nguoiDung.TrangThai = "Đã xóa";
-        
-            // Lưu thay đổi vào cơ sở dữ liệu
-            _context.SaveChanges();
-        
-            TempData["Message"] = "Tài khoản đã được chuyển sang trạng thái 'Đã xóa'.";
-            return RedirectToAction("QuanLyNguoiDung");
-        }
-
-        [HttpGet]
         public IActionResult QuanLyMayTinh(string search)
         {
             // Lấy danh sách máy tính từ cơ sở dữ liệu
