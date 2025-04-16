@@ -591,6 +591,7 @@ namespace Project.Controllers
         [HttpGet]
         public IActionResult XoaNguoiDung(string userId)
         {
+            Console.WriteLine($"MaNguoiDung nhận được 123: {userId}");
             if (string.IsNullOrEmpty(userId))
             {
                 TempData["Error"] = "ID người dùng không hợp lệ.";
@@ -620,31 +621,31 @@ namespace Project.Controllers
         }
 
         [HttpPost]
-        public IActionResult XoaNguoiDung(XoaNguoiDungViewModel model)
+        public IActionResult XoaNguoiDungConfirm (String userId)
         {
-            if (ModelState.IsValid)
+            Console.WriteLine($"MaNguoiDung nhận được: {userId}");
+            if (string.IsNullOrEmpty(userId))
             {
-                // Tìm người dùng theo ID
-                var user = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == model.MaNguoiDung);
-        
-                if (user == null)
-                {
-                    TempData["Error"] = "Không tìm thấy người dùng.";
-                    return RedirectToAction("QuanLyNguoiDung");
-                }
-        
-                // Đánh dấu người dùng là đã xóa
-                user.TrangThai = "Đã xóa";
-                user.NgayXoaTaiKhoan = DateTime.Now; // Ghi lại thời gian xóa tài khoản
-        
-                // Lưu thay đổi vào cơ sở dữ liệu
-                _context.SaveChanges();
-        
-                TempData["Message"] = "Xóa người dùng thành công.";
+                TempData["Error"] = "ID người dùng không hợp lệ.";
                 return RedirectToAction("QuanLyNguoiDung");
             }
         
-            return View(model);
+            var user = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == userId);
+            if (user == null)
+            {
+                TempData["Error"] = "Không tìm thấy người dùng.";
+                return RedirectToAction("QuanLyNguoiDung");
+            }
+        
+            // Đánh dấu người dùng là đã xóa
+            user.TrangThai = "Đã xóa";
+            user.NgayXoaTaiKhoan = DateTime.Now; // Ghi lại thời gian xóa tài khoản
+    
+            // Lưu thay đổi vào cơ sở dữ liệu
+            _context.SaveChanges();
+    
+            TempData["Message"] = "Xóa người dùng thành công.";
+            return RedirectToAction("QuanLyNguoiDung");
         }
 
         [HttpGet]
@@ -680,33 +681,51 @@ namespace Project.Controllers
         }
 
         [HttpPost]
-        public IActionResult XoaMayTinh(XoaMayTinhViewModel model)
+        public IActionResult XoaMayTinhCofirm(string computerId)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(computerId))
             {
-                // Tìm máy tính theo ID
-                var computer = _context.MayTinhs.FirstOrDefault(mt => mt.MaMay == model.MaMay);
-        
-                if (computer == null)
-                {
-                    TempData["Error"] = "Không tìm thấy máy tính.";
-                    return RedirectToAction("QuanLyMayTinh");
-                }
-        
-                // Đánh dấu máy tính là đã xóa
-                computer.TrangThai = "Đã xóa";
-                computer.ThoiGianXoa = DateTime.Now; // Ghi lại thời gian xóa máy tính
-        
-                // Lưu thay đổi vào cơ sở dữ liệu
-                _context.SaveChanges();
-        
-                TempData["Message"] = "Xóa máy tính thành công.";
+                TempData["Error"] = "ID máy tính không hợp lệ.";
                 return RedirectToAction("QuanLyMayTinh");
             }
-
-            // Nếu ModelState không hợp lệ, trả về lại View với model
-            return View(model);
+        
+            var model = new XoaMayTinhViewModel { MaMay = computerId };
+        
+            // Kiểm tra ModelState
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+        
+            // Tìm máy tính theo ID
+            var computer = _context.MayTinhs.FirstOrDefault(mt => mt.MaMay == model.MaMay);
+        
+            if (computer == null)
+            {
+                TempData["Error"] = "Không tìm thấy máy tính.";
+                return RedirectToAction("QuanLyMayTinh");
+            }
+        
+            // Kiểm tra nếu máy tính có dữ liệu liên quan
+            var hasRelatedData = _context.SuDungMays.Any(sdm => sdm.MaMay == computerId);
+        
+            if (hasRelatedData)
+            {
+                TempData["Error"] = "Máy tính đang được sử dụng. Không thể xóa.";
+                return RedirectToAction("QuanLyMayTinh");
+            }
+        
+            // Đánh dấu máy tính là đã xóa
+            computer.TrangThai = "Đã xóa";
+            computer.ThoiGianXoa = DateTime.Now; // Ghi lại thời gian xóa máy tính
+        
+            // Lưu thay đổi vào cơ sở dữ liệu
+            _context.SaveChanges();
+        
+            TempData["Message"] = "Xóa máy tính thành công.";
+            return RedirectToAction("QuanLyMayTinh");
         }
+
         [HttpGet]
         public IActionResult ThongKeTheoMay(string search)
         {
@@ -720,7 +739,7 @@ namespace Project.Controllers
                     mt.MoTa,
                     SuDungMays = _context.SuDungMays
                         .Where(sdm => sdm.MaMay == mt.MaMay)
-                        .ToList() // chuyển sang client-side xử lý
+                        .ToList() 
                 })
                 .AsEnumerable()
                 .Select(item => new ThongKeViewModel
