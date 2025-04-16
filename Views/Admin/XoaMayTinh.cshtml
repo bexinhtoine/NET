@@ -1,44 +1,75 @@
+@model Project.Models.Admin.XoaMayTinhViewModel
+
 @{
-    ViewData["Title"] = "Xóa người dùng";
+    ViewData["Title"] = "Xóa máy tính";
 }
 
-<div class="container mt-5">
-    <h2 class="text-danger text-center">Xóa người dùng</h2>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white text-center">
+                    <h4>Xóa máy tính</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Hiển thị thông tin máy tính -->
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>ID:</strong></label>
+                            <input type="text" class="form-control" value="@Model.MaMay" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Tên máy tính:</strong></label>
+                            <input type="text" class="form-control" value="@Model.TenMay" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Mô tả:</strong></label>
+                            <input type="text" class="form-control" value="@Model.MoTa" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Trạng thái:</strong></label>
+                            <input type="text" class="form-control text-danger" value="@Model.TrangThai" readonly />
+                        </div>
+                    </form>
 
-    <!-- Hiển thị thông báo lỗi -->
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger">
-            <strong>Lỗi:</strong> @TempData["Error"]
+                    <!-- Trường hợp máy tính đang sử dụng -->
+                    @if (Model.TrangThai == "Đang sử dụng")
+                    {
+                        <div class="alert alert-danger text-center">
+                            <strong>Máy tính này đang được sử dụng. Bạn không thể xóa.</strong>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/Admin/QuanLyMayTinh" class="btn btn-secondary">OK</a>
+                        </div>
+                    }
+                    else if (Model.CoDuLieuLienQuan)
+                    {
+                        <div class="alert alert-warning text-center">
+                            <strong>Máy tính này có dữ liệu liên quan. Bạn không nên xóa.</strong>
+                        </div>
+                        <div class="text-center mt-3">
+                            <form method="post" action="/Admin/XoaMayTinhConfirmed" class="d-inline">
+                                <input type="hidden" name="computerId" value="@Model.MaMay" />
+                                <button type="submit" class="btn btn-danger me-2">Xóa</button>
+                            </form>
+                            <a href="/Admin/QuanLyMayTinh" class="btn btn-secondary">Hủy</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info text-center">
+                            <p>Bạn có chắc chắn muốn xóa máy tính này không?</p>
+                        </div>
+                        <div class="text-center mt-3">
+                            <form method="post" action="/Admin/XoaMayTinhConfirmed" class="d-inline">
+                                <input type="hidden" name="computerId" value="@Model.MaMay" />
+                                <button type="submit" class="btn btn-danger me-2">Xóa</button>
+                            </form>
+                            <a href="/Admin/QuanLyMayTinh" class="btn btn-secondary">Hủy</a>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
-    }
-
-    <!-- Hiển thị cảnh báo -->
-    @if (TempData["Warning"] != null)
-    {
-        <div class="alert alert-warning">
-            <strong>Cảnh báo:</strong> @TempData["Warning"]
-        </div>
-    }
-
-    <!-- Hiển thị thông báo thành công -->
-    @if (TempData["Message"] != null)
-    {
-        <div class="alert alert-success">
-            <strong>Thành công:</strong> @TempData["Message"]
-        </div>
-    }
-
-    <!-- Hiển thị xác nhận xóa -->
-    @if (TempData["ConfirmDelete"] != null)
-    {
-        <div class="alert alert-info">
-            <p>Bạn có chắc chắn muốn xóa người dùng <strong>@TempData["UserName"]</strong> không?</p>
-            <form method="post" action="/Admin/XoaNguoiDung">
-                <input type="hidden" name="userId" value="@TempData["UserId"]" />
-                <button type="submit" class="btn btn-danger">Xóa</button>
-                <a href="/Admin/QuanLyNguoiDung" class="btn btn-secondary">Hủy</a>
-            </form>
-        </div>
-    }
+    </div>
 </div>

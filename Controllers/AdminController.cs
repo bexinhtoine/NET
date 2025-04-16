@@ -512,6 +512,66 @@ namespace Project.Controllers
         }
 
         [HttpGet]
+        public IActionResult XoaMayTinh(string computerId)
+        {
+            if (string.IsNullOrEmpty(computerId))
+            {
+                TempData["Error"] = "ID máy tính không hợp lệ.";
+                return RedirectToAction("QuanLyMayTinh");
+            }
+        
+            var computer = _context.MayTinhs.FirstOrDefault(mt => mt.MaMay == computerId);
+            if (computer == null)
+            {
+                TempData["Error"] = "Không tìm thấy máy tính.";
+                return RedirectToAction("QuanLyMayTinh");
+            }
+        
+            // Kiểm tra nếu máy tính có dữ liệu liên quan
+            var hasRelatedData = _context.SuDungMays.Any(sdm => sdm.MaMay == computerId);
+        
+            // Tạo ViewModel để truyền dữ liệu sang View
+            var viewModel = new XoaMayTinhViewModel
+            {
+                MaMay = computer.MaMay,
+                TenMay = computer.TenMay,
+                MoTa = computer.MoTa,
+                TrangThai = computer.TrangThai,
+                CoDuLieuLienQuan = hasRelatedData
+            };
+        
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult XoaMayTinh(XoaMayTinhViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Tìm máy tính theo ID
+                var computer = _context.MayTinhs.FirstOrDefault(mt => mt.MaMay == model.MaMay);
+        
+                if (computer == null)
+                {
+                    TempData["Error"] = "Không tìm thấy máy tính.";
+                    return RedirectToAction("QuanLyMayTinh");
+                }
+        
+                // Đánh dấu máy tính là đã xóa
+                computer.TrangThai = "Đã xóa";
+                computer.ThoiGianXoa = DateTime.Now; // Ghi lại thời gian xóa máy tính
+        
+                // Lưu thay đổi vào cơ sở dữ liệu
+                _context.SaveChanges();
+        
+                TempData["Message"] = "Xóa máy tính thành công.";
+                return RedirectToAction("QuanLyMayTinh");
+            }
+
+            // Nếu ModelState không hợp lệ, trả về lại View với model
+            return View(model);
+        }
+        [HttpGet]
         public IActionResult ThongKeTheoMay(string search)
         {
             var mayTinhList = _context.MayTinhs
