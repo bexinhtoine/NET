@@ -93,6 +93,13 @@
                                                 <div class="d-flex justify-content-center">
                                                     <a href="/Admin/ChinhSuaMayTinh/@may.MaMay" class="btn btn-warning btn-sm me-2">Chỉnh sửa</a>
                                                     <a href="/Admin/XoaMayTinh?computerId=@may.MaMay" class="btn btn-danger btn-sm">Xóa</a>
+                                                    @if (may.TrangThai == "Đang sử dụng")
+                                                    {
+                                                        <form method="post" action="/Admin/KetThucSuDungMay" class="d-inline">
+                                                            <input type="hidden" name="maMay" value="@may.MaMay" />
+                                                            <button type="submit" class="btn btn-info btn-sm me-2">Kết thúc</button>
+                                                        </form>
+                                                    }  
                                                 </div>
                                             </td>
                                         </tr>

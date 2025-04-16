@@ -45,8 +45,8 @@
         <div class="form-group">
             <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
         </div>
-        <div class="form-group">
-            <a href="javascript:history.back()" class="btn btn-secondary w-100">Quay lại</a>
+        <div class="form-group mt-3">
+            <a href="/Home/DangNhap" class="btn btn-outline-secondary w-100 py-2 fw-bold">Quay lại</a>
         </div>
 
         <div class="text-center mt-2">
@@ -89,6 +89,21 @@
         padding: 10px;
         font-size: 1rem;
         border-radius: 5px;
+    }
+
+    .btn-outline-secondary {
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        color: #000;
+        background-color: transparent;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        border-color: #ccc;
+        color: #000;
     }
 
     .validation-summary {

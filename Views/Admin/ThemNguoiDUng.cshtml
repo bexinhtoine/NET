@@ -1,12 +1,12 @@
-@model Project.Models.Admin.ChinhSuaNguoiDungViewModel
+@model Project.Models.Home.DangKyViewModel
 
 @{
-    ViewData["Title"] = "Chỉnh sửa người dùng";
+    ViewData["Title"] = "Thêm người dùng";
 }
 
 <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="card shadow p-4" style="width: 500px;">
-        <h2 class="text-primary mb-4 text-center">Chỉnh sửa người dùng</h2>
+        <h2 class="text-primary mb-4 text-center">Thêm người dùng</h2>
 
         @if (!ViewData.ModelState.IsValid)
         {
@@ -20,33 +20,41 @@
             </div>
         }
 
-        <form method="post" action="/Admin/ChinhSuaNguoiDung">
-            <input type="hidden" name="MaNguoiDung" value="@Model.MaNguoiDung" />
-
+        <form method="post" action="/Admin/ThemNguoiDung">
             <div class="mb-3">
-                <label for="TenDangNhap" class="form-label">Tên đăng nhập</label>
-                <input type="text" class="form-control" id="TenDangNhap" name="TenDangNhap" value="@Model.TenDangNhap" required />
+                <label for="Username" class="form-label">Tên đăng nhập</label>
+                <input type="text" class="form-control" id="Username" name="Username" value="@Model.Username" required />
             </div>
 
             <div class="mb-3">
-                <label for="HoTen" class="form-label">Họ tên</label>
-                <input type="text" class="form-control" id="HoTen" name="HoTen" value="@Model.HoTen" required />
+                <label for="FullName" class="form-label">Họ và tên</label>
+                <input type="text" class="form-control" id="FullName" name="FullName" value="@Model.FullName" required />
             </div>
 
             <div class="mb-3">
-                <label for="SoDienThoai" class="form-label">Số điện thoại</label>
-                <input type="text" class="form-control" id="SoDienThoai" name="SoDienThoai" value="@Model.SoDienThoai" required />
+                <label for="PhoneNumber" class="form-label">Số điện thoại</label>
+                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="Password" class="form-label">Mật khẩu</label>
+                <input type="password" class="form-control" id="Password" name="Password" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="ConfirmPassword" class="form-label">Xác nhận mật khẩu</label>
+                <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required />
             </div>
 
             <div class="mb-3">
                 <label for="Role" class="form-label">Vai trò</label>
                 <select class="form-select" id="Role" name="Role" required>
-                    <option value="Admin" selected="@(Model.Role == "Admin")">Admin</option>
                     <option value="Khách" selected="@(Model.Role == "Khách")">Khách</option>
+                    <option value="Admin" selected="@(Model.Role == "Admin")">Admin</option>
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Lưu thay đổi</button>
+            <button type="submit" class="btn btn-primary w-100">Thêm người dùng</button>
             <a href="/Admin/QuanLyNguoiDung" class="btn btn-secondary w-100 mt-2">Hủy</a>
         </form>
     </div>

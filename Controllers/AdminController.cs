@@ -78,80 +78,84 @@ namespace Project.Controllers
         [HttpGet]
         public IActionResult ThemNguoiDung()
         {
-            return View();
-        }
+            var model = new DangKyViewModel(); // Khởi tạo Model
+            return View(model); // Truyền Model sang View
+        } 
         
         [HttpPost]
         public IActionResult ThemNguoiDung(DangKyViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Kiểm tra xem tên đăng nhập đã tồn tại chưa
-                var existingUserByUsername = _context.NguoiDungs
-                    .FirstOrDefault(nd => nd.TenDangNhap == model.Username);
-        
-                if (existingUserByUsername != null)
-                {
-                    ModelState.AddModelError("Username", "Tên đăng nhập đã tồn tại.");
-                    return View(model);
-                }
-        
-                // Kiểm tra xem số điện thoại đã tồn tại chưa
-                var existingUserByPhone = _context.NguoiDungs
-                    .FirstOrDefault(nd => nd.SoDienThoai == model.PhoneNumber);
-        
-                if (existingUserByPhone != null)
-                {
-                    ModelState.AddModelError("PhoneNumber", "Số điện thoại đã được sử dụng.");
-                    return View(model);
-                }
-
-                // Kiểm tra số điện thoại có đủ 10 số không
-                if (model.PhoneNumber == null || model.PhoneNumber.Length != 10 || !model.PhoneNumber.All(char.IsDigit))
-                {
-                    ModelState.AddModelError("PhoneNumber", "Số điện thoại phải có đúng 10 chữ số.");
-                    return View(model);
-                }
-        
-                // Lấy ID lớn nhất hiện có trong cơ sở dữ liệu
-                var lastUser = _context.NguoiDungs
-                    .OrderByDescending(nd => nd.MaNguoiDung)
-                    .FirstOrDefault();
-        
-                string newId;
-                if (lastUser == null)
-                {
-                    // Nếu chưa có người dùng nào, bắt đầu từ 0000000001
-                    newId = "0000000001";
-                }
-                else
-                {
-                    // Tăng ID lên 1
-                    newId = (long.Parse(lastUser.MaNguoiDung) + 1).ToString("D10");
-                }
-        
-                // Tạo người dùng mới
-                var nguoiDungMoi = new NguoiDung
-                {
-                    MaNguoiDung = newId, // Gán ID mới
-                    HoTen = model.FullName ?? string.Empty,
-                    TenDangNhap = model.Username ?? string.Empty,
-                    MatKhau = model.Password ?? string.Empty,
-                    SoDienThoai = model.PhoneNumber,
-                    Role = model.Role ?? string.Empty,
-                    NgayTaoTaiKhoan = DateTime.Now, // Gán ngày tạo tài khoản
-                    TrangThai = "Hoạt động" // Gán trạng thái mặc định
-                };
-        
-                _context.NguoiDungs.Add(nguoiDungMoi);
-                _context.SaveChanges();
-        
-                // Đăng ký thành công
-                return RedirectToAction("QuanLyNguoiDung");
+                return View(model);
             }
-            return View(model);
+        
+            // Kiểm tra xem tên đăng nhập đã tồn tại chưa
+            var existingUserByUsername = _context.NguoiDungs
+                .FirstOrDefault(nd => nd.TenDangNhap == model.Username);
+        
+            if (existingUserByUsername != null)
+            {
+                ModelState.AddModelError("Username", "Tên đăng nhập đã tồn tại.");
+                return View(model);
+            }
+        
+            // Kiểm tra xem số điện thoại đã tồn tại chưa
+            var existingUserByPhone = _context.NguoiDungs
+                .FirstOrDefault(nd => nd.SoDienThoai == model.PhoneNumber);
+        
+            if (existingUserByPhone != null)
+            {
+                ModelState.AddModelError("PhoneNumber", "Số điện thoại đã được sử dụng.");
+                return View(model);
+            }
+        
+            // Kiểm tra số điện thoại có đủ 10 số không
+            if (string.IsNullOrEmpty(model.PhoneNumber) || model.PhoneNumber.Length != 10 || !model.PhoneNumber.All(char.IsDigit))
+            {
+                ModelState.AddModelError("PhoneNumber", "Số điện thoại phải có đúng 10 chữ số.");
+                return View(model);
+            }
+        
+            // Lấy ID lớn nhất hiện có trong cơ sở dữ liệu
+            var lastUser = _context.NguoiDungs
+                .OrderByDescending(nd => nd.MaNguoiDung)
+                .FirstOrDefault();
+        
+            string newId;
+            if (lastUser == null)
+            {
+                // Nếu chưa có người dùng nào, bắt đầu từ 0000000001
+                newId = "0000000001";
+            }
+            else
+            {
+                // Tăng ID lên 1
+                newId = (long.Parse(lastUser.MaNguoiDung) + 1).ToString("D10");
+            }
+        
+            // Tạo người dùng mới
+            var nguoiDungMoi = new NguoiDung
+            {
+                MaNguoiDung = newId, // Gán ID mới
+                HoTen = model.FullName ?? string.Empty,
+                TenDangNhap = model.Username ?? string.Empty,
+                MatKhau = model.Password ?? string.Empty,
+                SoDienThoai = model.PhoneNumber,
+                Role = model.Role ?? "Khách", // Mặc định là "Khách" nếu không được chỉ định
+                NgayTaoTaiKhoan = DateTime.Now, // Gán ngày tạo tài khoản
+                TrangThai = "Hoạt động" // Gán trạng thái mặc định
+            };
+        
+            // Thêm người dùng mới vào cơ sở dữ liệu
+            _context.NguoiDungs.Add(nguoiDungMoi);
+            _context.SaveChanges();
+        
+            // Đăng ký thành công
+            TempData["Message"] = "Thêm người dùng thành công.";
+            return RedirectToAction("QuanLyNguoiDung");
         }
-
+        
         [HttpGet]
         public IActionResult ChinhSuaNguoiDung(string id)
         {
@@ -408,6 +412,96 @@ namespace Project.Controllers
         
             return View(model);
         }
+
+
+        [HttpPost]
+        public IActionResult KetThucSuDungMay(string maMay)
+        {
+            if (string.IsNullOrEmpty(maMay))
+            {
+                Console.WriteLine("Mã máy không hợp lệ.");
+                TempData["Error"] = "Mã máy không hợp lệ.";
+                return RedirectToAction("Home");
+            }
+        
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Tìm thông tin thuê máy
+                    var suDungMay = _context.SuDungMays
+                        .FirstOrDefault(sdm => sdm.MaMay == maMay && sdm.ThoiGianKetThuc == null);
+        
+                    if (suDungMay == null)
+                    {
+                        Console.WriteLine("Không tìm thấy thông tin thuê máy.");
+                        TempData["Error"] = "Không tìm thấy thông tin thuê máy.";
+                        return RedirectToAction("Home");
+                    }
+        
+                    // Tìm thông tin máy
+                    var mayDangThue = _context.MayTinhs.FirstOrDefault(m => m.MaMay == maMay);
+                    if (mayDangThue == null)
+                    {
+                        Console.WriteLine("Không tìm thấy thông tin máy.");
+                        TempData["Error"] = "Không tìm thấy thông tin máy.";
+                        return RedirectToAction("Home");
+                    }
+        
+                    // Cập nhật trạng thái máy
+                    mayDangThue.TrangThai = "Sẵn sàng";
+        
+                    // Cập nhật thời gian kết thúc và tính toán chi phí
+                    suDungMay.ThoiGianKetThuc = DateTime.Now;
+                    suDungMay.TongThoiGian = (decimal?)((suDungMay.ThoiGianKetThuc - suDungMay.ThoiGianBatDau)?.TotalHours ?? 0);
+                    suDungMay.TongTien = suDungMay.TongThoiGian.Value * mayDangThue.DonGia;
+
+                    // Trường hợp tắt máy mà không bấm kết thúc và chạy lại chương trình khi thời gian quá hạn dùng tối đa
+                    if (suDungMay.TongTien < 0)
+                    {
+                        suDungMay.TongTien = 0;
+                        suDungMay.TongThoiGian = suDungMay.TongTien / mayDangThue.DonGia;
+                        suDungMay.ThoiGianKetThuc = suDungMay.ThoiGianBatDau.AddHours((double)suDungMay.TongThoiGian);
+                    }
+        
+                    // Cập nhật số dư người dùng
+                    var nguoiDung = _context.NguoiDungs.FirstOrDefault(nd => nd.MaNguoiDung == suDungMay.MaNguoiDung);
+                    if (nguoiDung == null)
+                    {
+                        TempData["Error"] = "Không tìm thấy thông tin người dùng.";
+                        return RedirectToAction("Home");
+                    }
+        
+                    if (suDungMay.TongTien.HasValue)
+                    {
+                        nguoiDung.SoDu -= suDungMay.TongTien.Value;
+                        if (nguoiDung.SoDu < 0)
+                        {
+                            nguoiDung.SoDu = 0; // Đảm bảo số dư không âm
+                            TempData["Error"] = "Số dư không đủ để thanh toán. Vui lòng nạp thêm tiền.";
+                            return RedirectToAction("Home");
+                        }
+                    }
+        
+                    // Lưu thay đổi vào cơ sở dữ liệu
+                    _context.SaveChanges();
+        
+                    // Commit transaction
+                    transaction.Commit();
+        
+                    TempData["Success"] = "Thuê máy đã kết thúc.";
+                    return RedirectToAction("QuanLyMayTinh");
+                }
+                catch (Exception ex)
+                {
+                    // Rollback transaction nếu có lỗi
+                    transaction.Rollback();
+                    TempData["Error"] = "Đã xảy ra lỗi khi kết thúc thuê máy.";
+                    return RedirectToAction("Home");
+                }
+            }
+        }      
+  
 
         [HttpGet]
         public IActionResult XoaNguoiDung(string userId)

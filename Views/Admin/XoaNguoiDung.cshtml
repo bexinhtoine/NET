@@ -48,7 +48,11 @@
                             <strong>Người dùng này có dữ liệu liên quan. Bạn không nên xóa.</strong>
                         </div>
                         <div class="text-center mt-3">
-                            <a href="/Admin/QuanLyNguoiDung" class="btn btn-secondary">OK</a>
+                            <form method="post" action="/Admin/XoaNguoiDung" class="d-inline">
+                                <input type="hidden" name="userId" value="@Model.MaNguoiDung" />
+                                <button type="submit" class="btn btn-danger me-2">Xóa</button>
+                            </form>
+                            <a href="/Admin/QuanLyNguoiDung" class="btn btn-secondary">Hủy</a>
                         </div>
                     }
                     else
@@ -57,7 +61,7 @@
                             <p>Bạn có chắc chắn muốn xóa người dùng này không?</p>
                         </div>
                         <div class="text-center mt-3">
-                            <form method="post" action="/Admin/XoaNguoiDungConfirmed" class="d-inline">
+                            <form method="post" action="/Admin/XoaNguoiDung" class="d-inline">
                                 <input type="hidden" name="userId" value="@Model.MaNguoiDung" />
                                 <button type="submit" class="btn btn-danger me-2">Xóa</button>
                             </form>
