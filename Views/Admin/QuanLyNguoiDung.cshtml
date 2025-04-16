@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Quản lý người dùng";
     var tenQuanTriVien = User.Claims.FirstOrDefault(c => c.Type == "HoTen")?.Value;
+    var IdQuanTriVien = User.Claims.FirstOrDefault(c => c.Type == "MaNguoiDung")?.Value;
 }
 
 <div class="container-fluid">
@@ -69,10 +70,11 @@
                                 <tr>
                                     <th style="width: 5%;">STT</th>
                                     <th style="width: 10%;">ID</th>
-                                    <th style="width: 20%;">Tên đăng nhập</th>
-                                    <th style="width: 20%;">Họ tên</th>
+                                    <th style="width: 15%;">Tên đăng nhập</th>
+                                    <th style="width: 15%;">Họ tên</th>
                                     <th style="width: 15%;">Số điện thoại</th>
                                     <th style="width: 10%;">Vai trò</th>
+                                    <th style="width: 10%;">Số dư (VNĐ)</th>
                                     <th style="width: 20%;">Hành động</th>
                                 </tr>
                             </thead>
@@ -90,8 +92,28 @@
                                             <td>@user.SoDienThoai</td>
                                             <td>@user.Role</td>
                                             <td>
-                                                <a href="/Admin/ChinhSuaNguoiDung/@user.MaNguoiDung" class="btn btn-warning btn-sm">Chỉnh sửa</a>
-                                                <a href="/Admin/XoaNguoiDung?userId=@user.MaNguoiDung" class="btn btn-danger btn-sm">Xóa</a>                         
+                                                @if (user.Role != "Admin")
+                                                {
+                                                    @(user.SoDu.ToString("N0") + " VNĐ")
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span> 
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (user.MaNguoiDung == IdQuanTriVien)
+                                                {
+                                                    <span>-</span> 
+                                                }
+                                                else{
+                                                    <a href="/Admin/ChinhSuaNguoiDung/@user.MaNguoiDung" class="btn btn-warning btn-sm">Chỉnh sửa</a>
+                                                    <a href="/Admin/XoaNguoiDung?userId=@user.MaNguoiDung" class="btn btn-danger btn-sm">Xóa</a>
+                                                    @if (user.Role != "Admin")
+                                                    {
+                                                        <a href="/Admin/NapTien?userId=@user.MaNguoiDung" class="btn btn-success btn-sm">Nạp tiền</a>
+                                                    }
+                                                }
                                             </td>
                                         </tr>
                                         stt++; // Tăng STT
@@ -100,7 +122,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="7" class="text-center">Không có người dùng nào.</td>
+                                        <td colspan="8" class="text-center">Không có người dùng nào.</td>
                                     </tr>
                                 }
                             </tbody>

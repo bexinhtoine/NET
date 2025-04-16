@@ -5,6 +5,7 @@ using Project.Models.Home;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Project.Models.KhachHang;
 
 namespace Project.Controllers
 {
@@ -63,7 +64,8 @@ namespace Project.Controllers
                     TenDangNhap = nd.TenDangNhap,
                     HoTen = nd.HoTen,
                     SoDienThoai = nd.SoDienThoai,
-                    Role = nd.Role
+                    Role = nd.Role,
+                    SoDu = (double)(nd.SoDu ?? 0) 
                 })
                 .OrderBy(nd => nd.Role == "Khách") // Sắp xếp Admin trước Khách
                 .ThenBy(nd => nd.HoTen) 
@@ -254,6 +256,90 @@ namespace Project.Controllers
             }
         
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult NapTien(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["Error"] = "Mã người dùng không hợp lệ.";
+                return RedirectToAction("QuanLyNguoiDung");
+            }
+        
+            // Lấy thông tin người dùng từ cơ sở dữ liệu
+            var user = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == userId);
+            if (user == null)
+            {
+                TempData["Error"] = "Không tìm thấy người dùng.";
+                return RedirectToAction("QuanLyNguoiDung");
+            }
+        
+            // Tạo ViewModel để truyền dữ liệu sang View
+            var model = new NapTienViewModel
+            {
+                MaNguoiDung = user.MaNguoiDung,
+                HoTen = user.HoTen,
+                SoDienThoai = user.SoDienThoai
+            };
+        
+            return View(model);
+        }
+        
+        [HttpPost]
+        public IActionResult NapTien(NapTienViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Tìm người dùng trong cơ sở dữ liệu
+                var user = _context.NguoiDungs.FirstOrDefault(u => u.MaNguoiDung == model.MaNguoiDung);
+                if (user == null)
+                {
+                    TempData["Error"] = "Không tìm thấy người dùng.";
+                    return RedirectToAction("QuanLyNguoiDung");
+                }
+        
+                // Lấy mã nạp tiền cuối cùng từ cơ sở dữ liệu
+                var maNapTienCuoi = _context.NapTiens
+                    .OrderByDescending(nt => nt.MaNapTien)
+                    .Select(nt => nt.MaNapTien)
+                    .FirstOrDefault();
+        
+                // Tạo mã nạp tiền mới
+                string maNapTienMoi;
+                if (string.IsNullOrEmpty(maNapTienCuoi))
+                {
+                    maNapTienMoi = "0000000001"; // Nếu chưa có mã nào, bắt đầu từ 0000000001
+                }
+                else
+                {
+                    // Tăng mã cuối cùng lên 1
+                    long soThuTu = long.Parse(maNapTienCuoi) + 1;
+                    maNapTienMoi = soThuTu.ToString("D10"); // Định dạng thành chuỗi 10 chữ số
+                }
+        
+                // Cộng số tiền vào số dư của người dùng
+                user.SoDu = (user.SoDu ?? 0) + model.SoTien;
+        
+                // Lưu lịch sử nạp tiền
+                var lichSuNapTien = new NapTien
+                {
+                    MaNapTien = maNapTienMoi,
+                    SoTien = model.SoTien,
+                    PhuongThuc = "Tiền mặt", // Hoặc phương thức khác nếu cần
+                    ThoiGianNap = DateTime.Now,
+                    MaNguoiDung = model.MaNguoiDung
+                };
+        
+                _context.NapTiens.Add(lichSuNapTien);
+                _context.SaveChanges();
+        
+                TempData["Success"] = $"Đã nạp {model.SoTien:N0} VNĐ cho người dùng {user.HoTen}.";
+                return RedirectToAction("QuanLyNguoiDung");
+            }
+        
+            TempData["Error"] = "Dữ liệu không hợp lệ.";
+            return RedirectToAction("QuanLyNguoiDung");
         }
 
         [HttpGet]
@@ -501,7 +587,6 @@ namespace Project.Controllers
                 }
             }
         }      
-  
 
         [HttpGet]
         public IActionResult XoaNguoiDung(string userId)

@@ -1,0 +1,68 @@
+@model Project.Models.Admin.NapTienViewModel
+
+@{
+    ViewData["Title"] = "Nạp tiền";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-sm" style="width: 600px;">
+        <div class="card-body">
+            <h2 class="text-center text-primary mb-4">Nạp tiền cho người dùng</h2>
+            <form asp-action="NapTien" method="post">
+                <input type="hidden" name="MaNguoiDung" value="@Model.MaNguoiDung" />
+                
+                <div class="mb-3">
+                    <label asp-for="MaNguoiDung" class="form-label">ID</label>
+                    <input asp-for="MaNguoiDung" class="form-control" readonly />
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="HoTen" class="form-label">Họ tên</label>
+                    <input asp-for="HoTen" class="form-control" readonly />
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="SoDienThoai" class="form-label">Số điện thoại</label>
+                    <input asp-for="SoDienThoai" class="form-control" readonly />
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="SoTien" class="form-label">Số tiền cần nạp (VNĐ)</label>
+                    <input asp-for="SoTien" class="form-control" />
+                    <span asp-validation-for="SoTien" class="text-danger"></span>
+                </div>
+                
+                <button type="submit" class="btn btn-success w-100">Nạp tiền</button>
+                <a href="/Admin/QuanLyNguoiDung" class="btn btn-secondary w-100 mt-2">Hủy</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .vh-100 {
+        height: 100vh; 
+    }
+
+    .card {
+        border-radius: 8px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-success, .btn-secondary {
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

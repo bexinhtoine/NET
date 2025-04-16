@@ -8,5 +8,6 @@ namespace Project.Models.Admin
         public string? SoDienThoai { get; set; } // Số điện thoại
         public string? MatKhau { get; set; } // Mật khẩu
         public string? Role { get; set; } // Vai trò (Admin/Khách)
+        public Double SoDu { get; set; } // Số dư tài khoản
     }
 }

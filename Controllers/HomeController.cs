@@ -71,7 +71,6 @@ namespace Project.Controllers
         
                 ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
             }
-        
             return View(model);
         }
         
